@@ -1,0 +1,118 @@
+// src/ai/flows/career-path-generator.ts
+'use server';
+
+/**
+ * @fileOverview Generates a personalized learning roadmap for a specified career or field of study.
+ *
+ * - careerPathGenerator - A function that generates the career path.
+ * - CareerPathInput - The input type for the careerPathgenerator function.
+ * - CareerPathOutput - The return type for the careerPathGenerator function.
+ */
+
+import {ai} from '@/ai/genkit';
+import {z} from 'genkit';
+import {findYoutubeVideosTool} from '@/services/youtube';
+import {googleSearchTool} from '@/services/google';
+
+const CareerPathInputSchema = z.object({
+  career: z.string().describe('The career or field of study the user is interested in.'),
+  currentRole: z.string().optional().describe("The user's current role or educational background."),
+  interests: z.string().optional().describe("A list of the user's interests."),
+});
+export type CareerPathInput = z.infer<typeof CareerPathInputSchema>;
+
+const ResourceSchema = z.object({
+  title: z.string().describe("The title of the resource. For websites, include the domain name in parentheses, e.g., 'Official React Docs (react.dev)'."),
+  url: z.string().url().describe('A valid and working URL for the resource.'),
+  type: z.enum(['video', 'course', 'book', 'article', 'website']).describe('The type of the resource.'),
+  videoId: z.string().optional().describe('If the resource is a YouTube video, provide its unique video ID.'),
+});
+
+const RoadmapSchema = z.object({
+  beginnerToIntermediate: z.array(z.string()).describe('A list of steps for the beginner to intermediate level.'),
+  intermediateToPro: z.array(z.string()).describe('A list of steps for the intermediate to pro level.'),
+  proToAdvanced: z.array(z.string()).describe('A list of steps for the pro to advanced level.'),
+});
+
+const ToolSchema = z.object({
+    name: z.string().describe("The name of the tool."),
+    description: z.string().describe("A brief, one-sentence description of the tool's primary purpose."),
+    cost: z.enum(['Free', 'Paid', 'Freemium']).describe("The cost model of the tool."),
+});
+
+const CareerPathOutputSchema = z.object({
+  roadmap: RoadmapSchema.describe('A personalized learning roadmap segmented by skill level.'),
+  knowledgeAreas: RoadmapSchema.describe('List of required knowledge areas, segmented by skill level.'),
+  resources: z.array(ResourceSchema).describe('A curated list of 2-3 high-quality, relevant resources for each category (video, course, etc.).'),
+  tools: z.array(ToolSchema).describe('List of the essential tools for the field, ordered from most to least recommended.'),
+  advice: z.array(z.string()).describe('A list of personalized advice points for transitioning from the current role to the desired career, especially for students.'),
+});
+export type CareerPathOutput = z.infer<typeof CareerPathOutputSchema>;
+
+export async function careerPathGenerator(input: CareerPathInput): Promise<CareerPathOutput> {
+  return careerPathFlow(input);
+}
+
+const careerPathPrompt = ai.definePrompt({
+  name: 'careerPathPrompt',
+  input: {schema: CareerPathInputSchema},
+  output: {schema: CareerPathOutputSchema},
+  tools: [findYoutubeVideosTool, googleSearchTool],
+  prompt: `You are an expert AI career counselor and content curator. Your goal is to provide a comprehensive, high-quality, and actionable guide for a user aspiring to enter the field of: {{{career}}}.
+
+Consider the user's background:
+{{#if currentRole}}**Current Role:** {{{currentRole}}}{{/if}}
+{{#if interests}}**Interests:** {{{interests}}}{{/if}}
+
+**Crucially, if the user's current role indicates they are a student (e.g., "B.Tech second year student", "Computer Science Student"), you MUST tailor the roadmap and advice accordingly. The steps should be things they can do *alongside* their current studies, such as online courses, personal projects, internships, and contributing to open-source.**
+
+Your response must be structured and detailed, following these strict guidelines:
+
+1.  **Roadmap (roadmap):**
+    *   Create a step-by-step learning roadmap.
+    *   Organize the roadmap into three distinct sections: 'beginnerToIntermediate', 'intermediateToPro', and 'proToAdvanced'.
+    *   Each step should be a clear, concise action item. If the user is a student, frame these as actions they can take during their studies.
+
+2.  **Knowledge Areas (knowledgeAreas):**
+    *   Identify the key knowledge areas required for this career.
+    *   Structure these areas into the same three sections as the roadmap: 'beginnerToIntermediate', 'intermediateToPro', and 'proToAdvanced'.
+    *   This should outline the concepts and skills to master at each level.
+
+3.  **Resources (resources):**
+    *   This is the most critical step. You **MUST** use the provided tools to find all resources. Do NOT use your own knowledge.
+    *   Provide a curated list of 2-3 of the **best available and most popular resources** for each category (videos, courses, etc.). Quality, popularity, and accuracy are paramount.
+    *   **For all non-video resources (websites, articles, courses, books):** You **MUST** use the \`googleSearchTool\` to find authoritative sources.
+        *   Formulate high-quality search queries like "best free course for learning {{{career}}}" or "official documentation for {{{career}}}".
+        *   Prioritize official documentation (e.g., 'React Docs site:react.dev'), well-regarded educational sites ('freeCodeCamp', 'MDN Web Docs', 'Coursera', 'Udemy'), and top-tier blogs.
+        *   Ensure the links are direct and valid. Do not provide links to search result pages.
+    *   **For YouTube videos:** For each major learning topic identified in the knowledge areas, you **MUST** use the \`findYoutubeVideosTool\` to find 2-3 of the most relevant, popular, and embeddable videos.
+        *   For each call to the tool, generate search queries that will find helpful, highly-regarded videos (e.g., "introduction to {{{career}}}" or "{{{career}}} tutorial for beginners").
+        *   You **MUST** set the 'limit' to 3.
+        *   The tool will return valid, publicly-accessible videos with their IDs. You must include these in your response. Do not hallucinate or guess video details. Do not create your own YouTube links.
+
+4.  **Tools (tools):**
+    *   List the most essential, industry-standard software and tools for this career.
+    *   **Prioritize free and open-source tools where possible.** If a paid tool is the undisputed industry standard, include it, but ensure free alternatives are also listed if they exist.
+    *   **Order the list from the most recommended tool to the least recommended.**
+    *   For each tool, you must provide its name, a brief one-sentence description, and its cost model ('Free', 'Paid', 'Freemium').
+
+5.  **Personalized Advice (advice):**
+    *   Based on the user's current role (especially if they are a student), provide a list of specific, actionable advice points as bullet points.
+    *   Focus on how they can leverage their current position to get ahead.
+    *   For students, this should include tips on internships, networking with professors and alumni, building a portfolio with class projects, and joining relevant clubs.
+    *   If no current role is provided, give general advice for a career changer.
+
+Return the entire response in a single, valid JSON object that adheres to the defined output schema. Every single URL must be a valid, working, direct link to the resource found by the tools.`,
+});
+
+const careerPathFlow = ai.defineFlow(
+  {
+    name: 'careerPathFlow',
+    inputSchema: CareerPathInputSchema,
+    outputSchema: CareerPathOutputSchema,
+  },
+  async input => {
+    const {output} = await careerPathPrompt(input);
+    return output!;
+  }
+);

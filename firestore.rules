@@ -1,0 +1,27 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper function to check ownership
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+
+    // Rule for the user's main profile document
+    match /users/{userId} {
+      allow read, write: if isOwner(userId);
+    }
+
+    // Separate, explicit rule for the history subcollection
+    // This allows a user to query (list) and modify documents in their own history.
+    match /users/{userId}/history/{historyId} {
+      allow list, read, write, create: if isOwner(userId);
+    }
+
+    // Users can only manage metadata for their own files.
+    match /users/{userId}/files/{fileId} {
+      allow read, write: if isOwner(userId);
+    }
+  }
+}
