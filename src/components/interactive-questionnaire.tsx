@@ -105,8 +105,8 @@ export function InteractiveQuestionnaire({ isOpen, onOpenChange, onSubmit }: { i
   const [formData, setFormData] = useState<FormValues>(initialFormData);
 
   const currentSchema = steps[currentStep].schema;
-  const methods = useForm({
-    resolver: zodResolver(currentSchema),
+  const methods = useForm<any>({
+    resolver: zodResolver(currentSchema as any),
     defaultValues: steps[currentStep].defaultValues,
   });
   
@@ -266,7 +266,7 @@ export function InteractiveQuestionnaire({ isOpen, onOpenChange, onSubmit }: { i
                                         ? field.onChange([...(field.value || []), item.id])
                                         : field.onChange(
                                             (field.value || []).filter(
-                                                (value) => value !== item.id
+                                                (value: string) => value !== item.id
                                             )
                                             );
                                     }}

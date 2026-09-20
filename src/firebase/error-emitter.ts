@@ -23,9 +23,9 @@ class Emitter<Events extends Record<string, unknown>> {
 }
 
 // Define the events and their payload types
-interface AppEvents {
+type AppEvents = {
   'permission-error': Error;
-}
+};
 
 // Export a singleton instance of the emitter
 export const errorEmitter = new Emitter<AppEvents>();
