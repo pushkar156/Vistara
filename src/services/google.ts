@@ -34,8 +34,8 @@ export const googleSearchTool = ai.defineTool(
         const apiKey = process.env.GOOGLE_API_KEY;
         const cseId = process.env.GOOGLE_CSE_ID;
 
-        if (!apiKey || !cseId) {
-            console.error('GOOGLE_API_KEY or GOOGLE_CSE_ID is not set in the environment variables.');
+        if (!apiKey || !cseId || apiKey.startsWith('your_') || cseId.startsWith('your_')) {
+            console.warn('GOOGLE_API_KEY or GOOGLE_CSE_ID is not configured. Returning empty results.');
             return [];
         }
 

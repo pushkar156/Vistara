@@ -135,7 +135,7 @@ export default function LoginPage() {
                       <FormItem>
                         <FormLabel>Email</FormLabel>
                         <FormControl>
-                          <Input type="email" placeholder="you@example.com" {...field} />
+                          <Input type="email" placeholder="you@example.com" {...field} value={field.value ?? ''} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -149,7 +149,7 @@ export default function LoginPage() {
                         <FormLabel>Password</FormLabel>
                         <FormControl>
                            <div className="relative">
-                            <Input type={showPassword ? "text" : "password"} placeholder="••••••••" {...field} />
+                            <Input type={showPassword ? "text" : "password"} placeholder="••••••••" {...field} value={field.value ?? ''} />
                              <Button
                                 type="button"
                                 variant="ghost"
@@ -196,7 +196,7 @@ export default function LoginPage() {
                       <FormItem>
                         <FormLabel>Name</FormLabel>
                         <FormControl>
-                          <Input placeholder="Your Name" {...field} />
+                          <Input placeholder="Your Name" {...field} value={field.value ?? ''} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -209,7 +209,7 @@ export default function LoginPage() {
                       <FormItem>
                         <FormLabel>Email</FormLabel>
                         <FormControl>
-                          <Input type="email" placeholder="you@example.com" {...field} />
+                          <Input type="email" placeholder="you@example.com" {...field} value={field.value ?? ''} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -223,7 +223,7 @@ export default function LoginPage() {
                         <FormLabel>Password</FormLabel>
                         <FormControl>
                           <div className="relative">
-                            <Input type={showPassword ? "text" : "password"} placeholder="••••••••" {...field} />
+                            <Input type={showPassword ? "text" : "password"} placeholder="••••••••" {...field} value={field.value ?? ''} />
                              <Button
                                 type="button"
                                 variant="ghost"

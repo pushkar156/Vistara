@@ -77,7 +77,7 @@ const InputForm = ({
                         <FormControl>
                             <div className="relative">
                             <Lightbulb className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                            <Input placeholder="e.g., 'Software Engineering' or 'Digital Marketing'" {...field} className="pl-10" />
+                            <Input placeholder="e.g., 'Software Engineering' or 'Digital Marketing'" {...field} value={field.value ?? ''} className="pl-10" />
                             </div>
                         </FormControl>
                         <FormMessage />
@@ -94,7 +94,7 @@ const InputForm = ({
                             <FormControl>
                             <div className="relative">
                                 <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                                <Input placeholder="e.g., '12th class student'" {...field} className="pl-10" />
+                                <Input placeholder="e.g., '12th class student'" {...field} value={field.value ?? ''} className="pl-10" />
                             </div>
                             </FormControl>
                         </FormItem>
@@ -109,7 +109,7 @@ const InputForm = ({
                             <FormControl>
                             <div className="relative">
                                 <Sparkles className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                                <Input placeholder="e.g., 'Art, technology, reading'" {...field} className="pl-10" />
+                                <Input placeholder="e.g., 'Art, technology, reading'" {...field} value={field.value ?? ''} className="pl-10" />
                             </div>
                             </FormControl>
                         </FormItem>

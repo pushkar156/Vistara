@@ -4,12 +4,35 @@ import { useAuth } from '@/hooks/use-auth';
 import { useHistory } from '@/hooks/use-history';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { History, Clock, ArrowRight, User, Search, Loader2 } from 'lucide-react';
+import { History, Clock, ArrowRight, User, Search, Loader2, Trash2 } from 'lucide-react';
 import Link from 'next/link';
+import { useToast } from '@/hooks/use-toast';
+import { useState } from 'react';
 
 export default function HistoryPage() {
   const { user, loading: authLoading } = useAuth();
-  const { history, loading: historyLoading, error } = useHistory();
+  const { history, loading: historyLoading, error, deleteHistoryItem } = useHistory();
+  const { toast } = useToast();
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  const handleDelete = async (id: string, career: string) => {
+    setDeletingId(id);
+    try {
+      await deleteHistoryItem(id);
+      toast({
+        title: 'Roadmap Removed',
+        description: `Removed "${career}" from your history.`,
+      });
+    } catch (err: any) {
+      toast({
+        variant: 'destructive',
+        title: 'Delete Failed',
+        description: err.message || 'Could not delete item.',
+      });
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   if (authLoading || historyLoading) {
     return (
@@ -64,7 +87,7 @@ export default function HistoryPage() {
             Your Career History
           </h1>
           <p className="text-xl text-muted-foreground mt-4">
-            Review your past explorations and continue your journey.
+            Review your past explorations, track progress, or continue your journey.
           </p>
         </header>
 
@@ -92,15 +115,29 @@ export default function HistoryPage() {
                     <h3 className="font-headline text-2xl font-semibold text-primary">{item.generatedCareer}</h3>
                     <div className="flex items-center gap-2 text-muted-foreground text-sm mt-2">
                       <Clock size={16} />
-                      <span>Explored on {new Date(item.timestamp).toLocaleDateString()}</span>
+                      <span>Explored on {item.timestamp ? new Date(item.timestamp).toLocaleDateString() : 'Recent'}</span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-4">
-                    <Button variant="outline" size="icon" asChild>
-                        {/* In a real app, this would link to the specific roadmap */}
-                        <Link href="/"> 
-                            <ArrowRight size={20} />
-                        </Link>
+                  <div className="flex items-center gap-3">
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      disabled={deletingId === item.id}
+                      onClick={() => handleDelete(item.id, item.generatedCareer)}
+                      className="text-muted-foreground hover:text-destructive"
+                      title="Delete roadmap"
+                    >
+                      {deletingId === item.id ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Trash2 size={18} />
+                      )}
+                    </Button>
+                    <Button variant="default" asChild>
+                      <Link href={`/history/${item.id}`} className="flex items-center gap-2">
+                        View Roadmap
+                        <ArrowRight size={16} />
+                      </Link>
                     </Button>
                   </div>
                 </CardContent>
@@ -112,3 +149,4 @@ export default function HistoryPage() {
     </div>
   );
 }
+

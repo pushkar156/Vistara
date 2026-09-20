@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/hooks/use-auth';
 import { useFirebaseFirestore } from '@/firebase';
-import { collection, query, onSnapshot, orderBy, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, query, onSnapshot, orderBy, addDoc, serverTimestamp, doc, getDoc, deleteDoc } from 'firebase/firestore';
 import type { CareerPathOutput } from '@/ai/flows/career-path-generator';
 import { FirestorePermissionError, type SecurityRuleContext } from '@/firebase/errors';
 import { errorEmitter } from '@/firebase/error-emitter';
@@ -80,5 +80,28 @@ export function useHistory() {
 
   }, [user, firestore]);
 
-  return { history, loading, error, addHistoryItem };
+  const deleteHistoryItem = useCallback(async (itemId: string) => {
+    if (!user || !firestore) {
+      throw new Error('User is not authenticated or Firestore is not available.');
+    }
+    const docRef = doc(firestore, 'users', user.uid, 'history', itemId);
+    await deleteDoc(docRef);
+  }, [user, firestore]);
+
+  const getHistoryItem = useCallback(async (itemId: string): Promise<HistoryItem | null> => {
+    if (!user || !firestore) {
+      return null;
+    }
+    const docRef = doc(firestore, 'users', user.uid, 'history', itemId);
+    const docSnap = await getDoc(docRef);
+    if (!docSnap.exists()) return null;
+    return {
+      id: docSnap.id,
+      ...docSnap.data(),
+      timestamp: docSnap.data().timestamp?.toDate(),
+    } as HistoryItem;
+  }, [user, firestore]);
+
+  return { history, loading, error, addHistoryItem, deleteHistoryItem, getHistoryItem };
 }
+

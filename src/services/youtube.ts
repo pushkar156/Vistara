@@ -35,8 +35,8 @@ export const findYoutubeVideosTool = ai.defineTool(
     async (input) => {
         const apiKey = process.env.YOUTUBE_API_KEY;
 
-        if (!apiKey) {
-            console.error('YOUTUBE_API_KEY is not set in the environment variables.');
+        if (!apiKey || apiKey.startsWith('your_')) {
+            console.warn('YOUTUBE_API_KEY is not configured. Returning empty results.');
             return [];
         }
 

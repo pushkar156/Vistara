@@ -11,8 +11,6 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
-import {findYoutubeVideosTool} from '@/services/youtube';
-import {googleSearchTool} from '@/services/google';
 
 const CareerPathInputSchema = z.object({
   career: z.string().describe('The career or field of study the user is interested in.'),
@@ -57,7 +55,6 @@ const careerPathPrompt = ai.definePrompt({
   name: 'careerPathPrompt',
   input: {schema: CareerPathInputSchema},
   output: {schema: CareerPathOutputSchema},
-  tools: [findYoutubeVideosTool, googleSearchTool],
   prompt: `You are an expert AI career counselor and content curator. Your goal is to provide a comprehensive, high-quality, and actionable guide for a user aspiring to enter the field of: {{{career}}}.
 
 Consider the user's background:
@@ -79,16 +76,12 @@ Your response must be structured and detailed, following these strict guidelines
     *   This should outline the concepts and skills to master at each level.
 
 3.  **Resources (resources):**
-    *   This is the most critical step. You **MUST** use the provided tools to find all resources. Do NOT use your own knowledge.
-    *   Provide a curated list of 2-3 of the **best available and most popular resources** for each category (videos, courses, etc.). Quality, popularity, and accuracy are paramount.
-    *   **For all non-video resources (websites, articles, courses, books):** You **MUST** use the \`googleSearchTool\` to find authoritative sources.
-        *   Formulate high-quality search queries like "best free course for learning {{{career}}}" or "official documentation for {{{career}}}".
-        *   Prioritize official documentation (e.g., 'React Docs site:react.dev'), well-regarded educational sites ('freeCodeCamp', 'MDN Web Docs', 'Coursera', 'Udemy'), and top-tier blogs.
-        *   Ensure the links are direct and valid. Do not provide links to search result pages.
-    *   **For YouTube videos:** For each major learning topic identified in the knowledge areas, you **MUST** use the \`findYoutubeVideosTool\` to find 2-3 of the most relevant, popular, and embeddable videos.
-        *   For each call to the tool, generate search queries that will find helpful, highly-regarded videos (e.g., "introduction to {{{career}}}" or "{{{career}}} tutorial for beginners").
-        *   You **MUST** set the 'limit' to 3.
-        *   The tool will return valid, publicly-accessible videos with their IDs. You must include these in your response. Do not hallucinate or guess video details. Do not create your own YouTube links.
+    *   Attempt to use the provided tools (\`findYoutubeVideosTool\` and \`googleSearchTool\`) to find recent and relevant resources.
+    *   **Fallback Requirement:** If the tools return empty results (e.g., API keys not configured or rate-limited), you **MUST** provide a curated list of 4-6 high-quality, reputable, and real-world educational resources from your expert knowledge base.
+    *   Include a balanced mix of types ('video', 'course', 'article', 'website', 'book').
+    *   Prioritize authoritative, well-established resources such as official documentation (e.g., react.dev, python.org), freeCodeCamp, MDN Web Docs, Coursera, edX, MIT OpenCourseWare, and popular educational YouTube creators (e.g., Traversy Media, freeCodeCamp, Fireship).
+    *   Every resource URL MUST be a real, valid, direct HTTP/HTTPS URL (e.g. 'https://www.freecodecamp.org' or 'https://developer.mozilla.org').
+    *   If providing YouTube videos, provide a valid URL (e.g., 'https://www.youtube.com/watch?v=...') and, if known, the YouTube videoId.
 
 4.  **Tools (tools):**
     *   List the most essential, industry-standard software and tools for this career.
@@ -102,7 +95,7 @@ Your response must be structured and detailed, following these strict guidelines
     *   For students, this should include tips on internships, networking with professors and alumni, building a portfolio with class projects, and joining relevant clubs.
     *   If no current role is provided, give general advice for a career changer.
 
-Return the entire response in a single, valid JSON object that adheres to the defined output schema. Every single URL must be a valid, working, direct link to the resource found by the tools.`,
+Return the entire response in a single, valid JSON object that adheres to the defined output schema. Every single URL must be a valid, working, direct link.`,
 });
 
 const careerPathFlow = ai.defineFlow(

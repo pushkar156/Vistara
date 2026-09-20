@@ -167,7 +167,7 @@ export function InteractiveQuestionnaire({ isOpen, onOpenChange, onSubmit }: { i
               <FormItem>
                 <Label>What should we call you?</Label>
                 <FormControl>
-                  <Input placeholder="e.g., Alex" {...field} />
+                  <Input placeholder="e.g., Alex" {...field} value={field.value ?? ''} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -184,7 +184,7 @@ export function InteractiveQuestionnaire({ isOpen, onOpenChange, onSubmit }: { i
                 <FormItem>
                   <Label>What is your main career goal right now?</Label>
                   <FormControl>
-                    <Input placeholder="e.g., 'Become a UX Designer'" {...field} />
+                    <Input placeholder="e.g., 'Become a UX Designer'" {...field} value={field.value ?? ''} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -197,7 +197,7 @@ export function InteractiveQuestionnaire({ isOpen, onOpenChange, onSubmit }: { i
                 <FormItem>
                   <Label>What is your current role or educational background?</Label>
                   <FormControl>
-                    <Input placeholder="e.g., 'Graphic Design Student'" {...field} />
+                    <Input placeholder="e.g., 'Graphic Design Student'" {...field} value={field.value ?? ''} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -215,7 +215,7 @@ export function InteractiveQuestionnaire({ isOpen, onOpenChange, onSubmit }: { i
                         <FormItem>
                             <Label>What are your personal interests or hobbies?</Label>
                             <FormControl>
-                                <Textarea placeholder="e.g., Painting, hiking, building PCs..." {...field} />
+                                <Textarea placeholder="e.g., Painting, hiking, building PCs..." {...field} value={field.value ?? ''} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -228,7 +228,7 @@ export function InteractiveQuestionnaire({ isOpen, onOpenChange, onSubmit }: { i
                         <FormItem>
                             <Label>What skills are you most proud of?</Label>
                             <FormControl>
-                                <Textarea placeholder="e.g., Communication, problem-solving, Photoshop..." {...field} />
+                                <Textarea placeholder="e.g., Communication, problem-solving, Photoshop..." {...field} value={field.value ?? ''} />
                             </FormControl>
                              <FormMessage />
                         </FormItem>
@@ -293,7 +293,7 @@ export function InteractiveQuestionnaire({ isOpen, onOpenChange, onSubmit }: { i
                                 render={({ field }) => (
                                     <FormItem className="pl-6 pt-2">
                                         <FormControl>
-                                            <Input placeholder="Please specify your learning style" {...field} />
+                                            <Input placeholder="Please specify your learning style" {...field} value={field.value ?? ''} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -309,7 +309,7 @@ export function InteractiveQuestionnaire({ isOpen, onOpenChange, onSubmit }: { i
                     <FormItem>
                         <Label>How much time can you commit per week?</Label>
                         <FormControl>
-                            <Input placeholder="e.g., 3-5 hours" {...field} />
+                            <Input placeholder="e.g., 3-5 hours" {...field} value={field.value ?? ''} />
                         </FormControl>
                          <FormMessage />
                     </FormItem>
