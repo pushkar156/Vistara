@@ -1,8 +1,6 @@
 # Vistara 🧭  
 ### AI Education & Career Path Simulator: From Class 10 to Career
 
-> **Hackmatrix 5.0 | Track: MISC — 01**  
-> **Team:** Nonchalants  
 > Built for Class 10 students and parents to eliminate academic anxiety, simulate multi-year educational pathways, benchmark global institutions, calculate the relative cost of borrowing, and stress-test contingency scenarios.
 
 ---
@@ -73,16 +71,6 @@ Students completing Class 10 often make life-defining academic decisions without
 
 ```text
 Vistara/
-├── detail.md                       # Comprehensive Project Blueprint & Transformation Spec
-├── phases/                         # Detailed Step-by-Step Implementation Plans
-│   ├── README.md                   # Master phase index and roadmap tracker
-│   ├── phase-1-profile-intake.md   # Class 10 Student & Parent Intake System
-│   ├── phase-2-ai-pathway-simulation.md # Genkit AI Multi-Pathway Simulation Engine
-│   ├── phase-3-institution-comparison-scholarships.md # Global Institution & Funding Comparator
-│   ├── phase-4-financial-loan-simulator.md # Loan Cost & Relative Cost of Borrowing
-│   ├── phase-5-what-if-engine-decision-matrix.md # "What-If" Scenario Simulator & Decision Matrix
-│   ├── phase-6-ui-ux-refinement.md # Modern Glassmorphic UI/UX Refinement
-│   └── phase-7-testing-and-deployment.md # End-to-End Testing & Production Deployment
 ├── src/
 │   ├── ai/                         # Genkit flows, prompts, and schemas
 │   │   ├── flows/                  # Career & Pathway simulation flows
@@ -134,19 +122,5 @@ Open [http://localhost:9002](http://localhost:9002) in your browser.
 
 ---
 
-## 🔮 Implementation Roadmap
-
-For complete architectural specifications, consult the detailed docs in the [`phases/`](./phases/README.md) directory:
-- [x] **Project Blueprint & Spec**: [`detail.md`](./detail.md)
-- [x] **Phase 1 Plan**: [Student Profile Intake](./phases/phase-1-profile-intake.md)
-- [x] **Phase 2 Plan**: [AI Multi-Pathway Simulation Engine](./phases/phase-2-ai-pathway-simulation.md)
-- [x] **Phase 3 Plan**: [Global Institution Comparator & Scholarships](./phases/phase-3-institution-comparison-scholarships.md)
-- [x] **Phase 4 Plan**: [Financial & Education Loan Simulator](./phases/phase-4-financial-loan-simulator.md)
-- [x] **Phase 5 Plan**: ["What-If" Engine & Decision Matrix](./phases/phase-5-what-if-engine-decision-matrix.md)
-- [x] **Phase 6 Plan**: [UI/UX Visual & Interactive Refinement](./phases/phase-6-ui-ux-refinement.md)
-- [x] **Phase 7 Plan**: [Testing, Error Handling, & Deployment](./phases/phase-7-testing-and-deployment.md)
-
----
 
 ## 👥 Team Nonchalants
-Developed with passion for **Hackmatrix 5.0**.
