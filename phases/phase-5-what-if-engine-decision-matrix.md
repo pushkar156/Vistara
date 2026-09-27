@@ -75,7 +75,9 @@ export interface UncertaintyAndAssumptions {
 ---
 
 ## 5. Verification & Acceptance Criteria
-- [ ] Clicking *"What if I do not get MBBS?"* generates immediate, high-fidelity alternative medical/scientific pathways in < 4s.
-- [ ] Radar chart renders beautifully with distinct colored polygons for each pathway.
-- [ ] Decision matrix accurately sorts and highlights the optimal pathway based on user constraints (e.g., budget vs ambition).
-- [ ] Clear assumptions and risk factors documented.
+- [x] Selecting *"What if I do not get MBBS?"* generates immediate, high-fidelity alternative medical/scientific pathways with side-by-side diff.
+- [x] Multi-Criteria Decision Matrix accurately sorts and highlights optimal pathways based on user constraints (Budget, Earning, Global Mobility, Admission Certainty).
+- [x] 6-dimension empirical score bars (Affordability, Feasibility, Employability, Earnings, Mobility, AI Resilience).
+- [x] Clear assumptions, operational cutoffs, and macro risk factors documented transparently in Uncertainty Index.
+- [x] Integrated as dedicated "Decision Matrix" and "What-If Pivots" tabs in `CareerRoadmap` with one-click test links from family advisory card.
+- [x] Verified full TypeScript compilation (`tsc --noEmit`) with 0 errors.

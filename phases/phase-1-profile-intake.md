@@ -72,7 +72,9 @@ export interface StudentProfile {
 ---
 
 ## 5. Verification & Acceptance Criteria
-- [ ] Student can complete questionnaire in < 2 minutes.
-- [ ] Validation catches invalid inputs (e.g. percentage < 0 or > 100).
-- [ ] Financial budget slider clearly shows INR values (with USD toggle or indicator).
-- [ ] Quick-fill demo presets work seamlessly.
+- [x] Student can complete questionnaire in < 2 minutes.
+- [x] Validation catches invalid inputs (e.g. percentage < 0 or > 100).
+- [x] Financial budget slider clearly shows INR values (with USD toggle or indicator).
+- [x] Quick-fill demo presets work seamlessly.
+- [x] Verified with static TypeScript check (`tsc --noEmit` = 0 errors).
+- [x] Verified with browser end-to-end automation test.

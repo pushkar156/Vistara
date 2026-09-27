@@ -24,6 +24,8 @@ import { CareerRoadmap } from '@/components/career-roadmap';
 import { InteractiveQuestionnaire } from '@/components/interactive-questionnaire';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { Badge } from '@/components/ui/badge';
+import { StudentProfile, DEMO_PRESET_PROFILES } from '@/types/student-profile';
+import { School, Zap } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
@@ -137,6 +139,7 @@ export default function MainPage() {
   const [selectedRole, setSelectedRole] = useState<string | null>(null);
   const { toast } = useToast();
   const [isQuestionnaireOpen, setIsQuestionnaireOpen] = useState(false);
+  const [studentProfile, setStudentProfile] = useState<StudentProfile | null>(null);
   const [userPath, setUserPath] = useState<'explore' | 'direct' | null>(null);
 
   const form = useForm<UserInput>({
@@ -607,20 +610,23 @@ export default function MainPage() {
     }
   };
 
-  const handleQuestionnaireSubmit = (data: any) => {
-    const learningStyles = data.step4.learningStyles?.includes('other') 
-      ? [...data.step4.learningStyles.filter((s: string) => s !== 'other'), data.step4.otherLearningStyle]
-      : data.step4.learningStyles;
+  const handleQuestionnaireSubmit = (profile: StudentProfile) => {
+    setStudentProfile(profile);
+    const careerTarget = profile.targetRoleOrDomain?.trim() || 
+      `${profile.strongestSubjects.slice(0, 2).join(' & ')} Pathway`;
+    
+    const roleDesc = `Class 10 (${profile.class10Board} Board, ${profile.class10Percentage}%)`;
+    const interestsSummary = `Strong Subjects: ${profile.strongestSubjects.join(', ')}. Aptitude: Analytical(${profile.aptitudeTraits.analytical}/5), Creative(${profile.aptitudeTraits.creative}/5), Social(${profile.aptitudeTraits.socialHelping}/5), Practical(${profile.aptitudeTraits.practicalHandsOn}/5), Business(${profile.aptitudeTraits.businessEnterprise}/5). Annual Budget: ₹${profile.familyAnnualBudgetInLakhsINR}L/yr. Target Locations: ${profile.targetLocations.join(', ')}. Loan Preference: ${profile.willingnessForEducationLoan}. Preferred Work: ${profile.preferredWorkEnvironment}.${profile.budgetNotes ? ` Note: ${profile.budgetNotes}` : ''}`;
 
     const mappedData: UserInput = {
-      desiredCareer: data.step2.careerGoal,
-      currentRole: data.step2.currentBackground,
-      interests: `Interests: ${data.step3.interests}. Skills: ${data.step3.skills}. Prefers learning styles: ${learningStyles.join(', ')}.`,
-    }
+      desiredCareer: careerTarget,
+      currentRole: roleDesc,
+      interests: interestsSummary,
+    };
     form.reset(mappedData);
     onSubmit(mappedData);
     setIsQuestionnaireOpen(false);
-  }
+  };
 
   if (loading) {
     let message = 'Charting the course for your new career. Hang tight!';
@@ -642,7 +648,16 @@ export default function MainPage() {
   }
 
   if (finalResult && userInput) {
-    return <CareerRoadmap data={finalResult} userInput={userInput} onReset={handleReset} onViewOpportunities={handleViewOpportunities} onBackToRoleSelection={handleBackToRoleSelectionFromRoadmap} />;
+    return (
+      <CareerRoadmap
+        data={finalResult}
+        userInput={userInput}
+        studentProfile={studentProfile}
+        onReset={handleReset}
+        onViewOpportunities={handleViewOpportunities}
+        onBackToRoleSelection={handleBackToRoleSelectionFromRoadmap}
+      />
+    );
   }
   
   if (opportunitiesResult && selectedRole) {
@@ -691,41 +706,77 @@ export default function MainPage() {
         initial="hidden"
         animate="visible"
     >
-        <motion.h1 variants={itemVariants} className="text-5xl font-headline font-bold">Welcome, Explorer!</motion.h1>
-        <motion.p variants={itemVariants} className="mt-4 text-lg text-muted-foreground">
-            How would you like to start your journey today?
+        <motion.div variants={itemVariants} className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-semibold mb-4">
+            <School className="h-3.5 w-3.5" />
+            <span>Class 10 to Career • AI Decision-Support Platform</span>
+        </motion.div>
+
+        <motion.h1 variants={itemVariants} className="text-4xl sm:text-5xl font-headline font-bold tracking-tight">
+            Plan Your Future with Confidence
+        </motion.h1>
+        <motion.p variants={itemVariants} className="mt-3 text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
+            Simulate educational journeys from Class 10 boards through streams, entrance exams, global colleges, education loans, and high-demand careers.
         </motion.p>
-        <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-10">
-            <motion.div whileHover={{ scale: 1.05, y: -5 }} transition={{ type: 'spring', stiffness: 300 }}>
-                <Card className="text-center p-8 h-full flex flex-col">
-                    <CardHeader>
-                        <Search className="h-12 w-12 text-primary mx-auto mb-4" />
-                        <CardTitle className="font-headline text-3xl">Explore Career Options</CardTitle>
+
+        {/* Demo Presets Bar */}
+        <motion.div variants={itemVariants} className="mt-6 p-3 rounded-2xl border border-border/50 bg-card/40 backdrop-blur-sm max-w-2xl mx-auto flex items-center justify-between flex-wrap gap-2 text-left">
+            <div className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
+                <Zap className="h-3.5 w-3.5 text-amber-500" />
+                <span>Instant Demo Profiles:</span>
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+                {DEMO_PRESET_PROFILES.map((preset) => (
+                    <button
+                        key={preset.id}
+                        type="button"
+                        onClick={() => {
+                            setStudentProfile(preset.profile);
+                            setIsQuestionnaireOpen(true);
+                        }}
+                        className="text-xs px-2.5 py-1 rounded-full border border-border/70 hover:border-primary/50 hover:bg-primary/10 text-foreground font-medium transition-all"
+                    >
+                        {preset.name.split(' ')[0]} ({preset.profile.class10Percentage}%)
+                    </button>
+                ))}
+            </div>
+        </motion.div>
+
+        <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+            <motion.div whileHover={{ scale: 1.02, y: -4 }} transition={{ type: 'spring', stiffness: 300 }}>
+                <Card className="text-center p-6 h-full flex flex-col border-primary/30 shadow-lg shadow-primary/5 bg-card/60">
+                    <CardHeader className="p-4">
+                        <div className="mx-auto p-3 rounded-2xl bg-primary/10 text-primary w-fit mb-2">
+                            <School className="h-8 w-8" />
+                        </div>
+                        <CardTitle className="font-headline text-2xl">Class 10 Student & Parent Intake</CardTitle>
                     </CardHeader>
-                    <CardContent className="flex-grow flex flex-col justify-between">
-                        <p className="text-muted-foreground mb-6">
-                            Not sure where to start? Discover your passions and find career paths that match your interests.
+                    <CardContent className="flex-grow flex flex-col justify-between p-4 pt-0">
+                        <p className="text-sm text-muted-foreground mb-6">
+                            Answer 4 quick sections covering Class 10 marks, aptitude strengths, annual family budget, and country preferences to generate personalized multi-pathway simulations.
                         </p>
-                        <Button size="lg" onClick={() => setUserPath('explore')}>
-                            Guide Me
-                            <ArrowRight className="ml-2 h-5 w-5" />
+                        <Button size="lg" className="w-full gap-2 font-semibold shadow-md shadow-primary/20" onClick={() => setIsQuestionnaireOpen(true)}>
+                            Start Class 10 Profiler
+                            <ArrowRight className="h-4 w-4" />
                         </Button>
                     </CardContent>
                 </Card>
             </motion.div>
-            <motion.div whileHover={{ scale: 1.05, y: -5 }} transition={{ type: 'spring', stiffness: 300 }}>
-                <Card className="text-center p-8 h-full flex flex-col">
-                    <CardHeader>
-                        <Route className="h-12 w-12 text-primary mx-auto mb-4" />
-                        <CardTitle className="font-headline text-3xl">I Know My Path</CardTitle>
+
+            <motion.div whileHover={{ scale: 1.02, y: -4 }} transition={{ type: 'spring', stiffness: 300 }}>
+                <Card className="text-center p-6 h-full flex flex-col bg-card/60 border-border/60">
+                    <CardHeader className="p-4">
+                        <div className="mx-auto p-3 rounded-2xl bg-muted text-foreground w-fit mb-2">
+                            <Route className="h-8 w-8" />
+                        </div>
+                        <CardTitle className="font-headline text-2xl">Express Dream Career</CardTitle>
                     </CardHeader>
-                    <CardContent className="flex-grow flex flex-col justify-between">
-                        <p className="text-muted-foreground mb-6">
-                            Already have a dream job in mind? Get a detailed, step-by-step roadmap to make it a reality.
+                    <CardContent className="flex-grow flex flex-col justify-between p-4 pt-0">
+                        <p className="text-sm text-muted-foreground mb-6">
+                            Already have a specific role or field in mind (e.g. AI Engineer, Doctor, Investment Banker)? Enter it directly to inspect entrance exams and educational roadmaps.
                         </p>
-                        <Button size="lg" onClick={() => setUserPath('direct')}>
-                            Show Me The Way
-                            <ArrowRight className="ml-2 h-5 w-5" />
+                        <Button variant="outline" size="lg" className="w-full gap-2" onClick={() => setUserPath('direct')}>
+                            Direct Search
+                            <ArrowRight className="h-4 w-4" />
                         </Button>
                     </CardContent>
                 </Card>
@@ -738,22 +789,24 @@ export default function MainPage() {
   const ExplorationPath = () => (
      <div className="w-full max-w-4xl mx-auto text-center">
         <Button variant="ghost" onClick={() => setUserPath(null)} className="mb-4"><ArrowLeft className="mr-2 h-4 w-4"/>Back to choices</Button>
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-headline font-bold">Your Guided Journey</h2>
-          <p className="mt-4 text-lg text-muted-foreground">Answer a few questions to build a hyper-personalized career plan.</p>
+        <div className="text-center mb-8">
+          <h2 className="text-3xl font-headline font-bold">Class 10 Student & Parent Guided Journey</h2>
+          <p className="mt-2 text-sm text-muted-foreground">Answer key academic, aptitude, and financial questions to simulate multi-year pathways.</p>
         </div>
-        <Card className="text-center p-8">
+        <Card className="text-center p-8 max-w-xl mx-auto bg-card/60">
             <CardHeader>
-                <Handshake className="h-12 w-12 text-primary mx-auto mb-4" />
-                <CardTitle className="font-headline text-3xl">Let's Get to Know You</CardTitle>
+                <div className="mx-auto p-4 rounded-2xl bg-primary/10 text-primary w-fit mb-3">
+                    <School className="h-10 w-10" />
+                </div>
+                <CardTitle className="font-headline text-2xl">Complete Your Profile</CardTitle>
             </CardHeader>
             <CardContent>
-                <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-                Ready to find your calling? We'll walk you through a simple, 4-step process to explore your passions, define your goals, and create a custom-built action plan for your dream career.
+                <p className="text-sm text-muted-foreground mb-6">
+                    Our 4-step intake factors in your school board, percentage, favorite subjects, financial budget, and dream destinations to model real-world academic choices.
                 </p>
-                <Button size="lg" onClick={() => setIsQuestionnaireOpen(true)}>
-                    Start My Journey
-                    <ArrowRight className="ml-2 h-5 w-5" />
+                <Button size="lg" className="w-full gap-2" onClick={() => setIsQuestionnaireOpen(true)}>
+                    Open Profile Intake
+                    <ArrowRight className="h-4 w-4" />
                 </Button>
             </CardContent>
         </Card>
@@ -793,6 +846,7 @@ export default function MainPage() {
         isOpen={isQuestionnaireOpen} 
         onOpenChange={setIsQuestionnaireOpen}
         onSubmit={handleQuestionnaireSubmit}
+        initialProfile={studentProfile}
     />
     </>
   );

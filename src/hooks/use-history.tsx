@@ -8,11 +8,14 @@ import type { CareerPathOutput } from '@/ai/flows/career-path-generator';
 import { FirestorePermissionError, type SecurityRuleContext } from '@/firebase/errors';
 import { errorEmitter } from '@/firebase/error-emitter';
 
+import type { StudentProfile } from '@/types/student-profile';
+
 export interface HistoryItem {
   id: string;
   generatedCareer: string;
   roadmapDetails: CareerPathOutput;
   aiPrompt: string;
+  studentProfile?: StudentProfile;
   timestamp: Date;
 }
 

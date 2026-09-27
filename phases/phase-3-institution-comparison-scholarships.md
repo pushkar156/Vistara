@@ -75,6 +75,8 @@ export interface ScholarshipItem {
 ---
 
 ## 5. Verification & Acceptance Criteria
-- [ ] Users can compare at least 2–4 institutions side-by-side.
-- [ ] Accurate calculation of Total Cost (Tuition $\times$ Duration + Living Costs).
-- [ ] Scholarships correctly display eligibility criteria relevant to Class 10/12 performers.
+- [x] Users can compare at least 2–4 institutions side-by-side with add/remove toggles.
+- [x] Accurate calculation of Total Cost (Tuition $\times$ Duration + Living Costs) and 3-Year European cost advantage comparison.
+- [x] Scholarships correctly display eligibility criteria relevant to Class 10/12 performers with direct application links.
+- [x] Integrated seamlessly into `CareerRoadmap` as dedicated "Colleges" and "Scholarships" tabs with quick jump from Pathway cards.
+- [x] Verified full TypeScript compilation (`tsc --noEmit`) and Next.js production build (`next build`) with 0 errors.

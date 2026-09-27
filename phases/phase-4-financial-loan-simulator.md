@@ -62,7 +62,9 @@ $$\text{Monthly Debt Burden Ratio} = \frac{\text{Monthly Loan EMI}}{\text{Estima
 ---
 
 ## 5. Verification & Acceptance Criteria
-- [ ] Sliders respond smoothly (< 16ms render cycle).
-- [ ] Loan mathematical formulas verified against standard bank loan schedules.
-- [ ] Relative Cost of Borrowing is explicitly explained with layman-friendly tooltips for parents.
-- [ ] Debt-to-income metric alerts the user when a high loan is taken for a low starting salary role.
+- [x] Sliders respond smoothly (< 16ms render cycle).
+- [x] Loan mathematical formulas verified against standard bank loan schedules (simple & compound moratorium interest, EMI amortization).
+- [x] Relative Cost of Borrowing (RCB) is explicitly explained with layman-friendly calculations for students and parents.
+- [x] Debt-to-income metric alerts the user when a high loan is taken for a low starting salary role (Safe, Moderate, High Risk).
+- [x] Integrated as a dedicated "Loans & EMI" tab in `CareerRoadmap` with one-click simulator links from pathway compensation cards.
+- [x] Verified full TypeScript compilation (`tsc --noEmit`) with 0 errors.

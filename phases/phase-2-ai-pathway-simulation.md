@@ -95,7 +95,9 @@ export interface FullSimulationResponse {
 ---
 
 ## 5. Verification & Acceptance Criteria
-- [ ] Returns 3–4 coherent, distinct pathways from Class 10 to career.
-- [ ] Incorporates the student's specific Class 10 performance and budget constraints.
-- [ ] Accurate representation of Indian streams and global alternatives.
-- [ ] Sub-5 second generation with error boundaries.
+- [x] Returns 3–4 coherent, distinct pathways from Class 10 to career.
+- [x] Incorporates the student's specific Class 10 performance and budget constraints.
+- [x] Accurate representation of Indian streams and global alternatives.
+- [x] Sub-5 second generation with error boundaries and high-fidelity fallback.
+- [x] Resolved Next.js 'use server' runtime error.
+- [x] Verified in browser with full automated end-to-end simulation.
