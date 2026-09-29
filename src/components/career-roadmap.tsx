@@ -209,6 +209,7 @@ export function CareerRoadmap({
         generatedCareer: userInput.desiredCareer,
         roadmapDetails: data,
         aiPrompt: `Career: ${userInput.desiredCareer}. Background: ${userInput.currentRole || 'N/A'}. Details: ${userInput.interests || 'N/A'}`,
+        studentProfile: studentProfile || undefined,
       });
       toast({
         title: 'Simulation Saved!',
@@ -517,7 +518,7 @@ export function CareerRoadmap({
                       {isActive && (
                         <motion.div
                           layoutId="activeWorkspaceTabUnderline"
-                          className="absolute bottom-0 left-2 right-2 h-[3px] bg-primary rounded-full shadow-[0_0_10px_rgba(59,130,246,0.6)]"
+                          className="absolute bottom-0 left-2 right-2 h-[3px] bg-primary rounded-full shadow-[0_0_10px_rgba(121,13,22,0.6)]"
                           transition={{ type: 'spring', stiffness: 500, damping: 35 }}
                         />
                       )}
@@ -555,7 +556,7 @@ export function CareerRoadmap({
                           {isActive && (
                             <motion.div
                               layoutId="activePathwayPillUnderline"
-                              className="absolute bottom-0 left-3 right-3 h-[2.5px] bg-primary rounded-full shadow-[0_0_8px_rgba(59,130,246,0.5)]"
+                              className="absolute bottom-0 left-3 right-3 h-[2.5px] bg-primary rounded-full shadow-[0_0_8px_rgba(121,13,22,0.5)]"
                               transition={{ type: 'spring', stiffness: 500, damping: 35 }}
                             />
                           )}

@@ -16,7 +16,7 @@ import {
     deleteUser
 } from 'firebase/auth';
 import { getFirestore, type Firestore } from 'firebase/firestore';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 
 import { firebaseConfig } from '@/firebase/config';
 import { FirebaseProvider, type FirebaseContextType } from '@/firebase/provider';
@@ -24,6 +24,7 @@ import { AuthContext, type AuthContextType } from '@/hooks/use-auth';
 import { ThemeProvider } from '@/components/theme-provider';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
+import { SmoothScrollProvider } from '@/components/smooth-scroll-provider';
 
 type FirebaseClientProviderProps = {
   children: ReactNode;
@@ -34,6 +35,8 @@ export function FirebaseClientProvider({ children }: FirebaseClientProviderProps
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+
+  const pathname = usePathname();
 
   // Initialize Firebase App
   useEffect(() => {
@@ -118,13 +121,15 @@ export function FirebaseClientProvider({ children }: FirebaseClientProviderProps
                 enableSystem
                 disableTransitionOnChange
             >
-              <div className="flex flex-col min-h-screen">
-                <Header />
-                <main className="flex-1">
-                  {children}
-                </main>
-                <Footer />
-              </div>
+              <SmoothScrollProvider>
+                <div className="flex flex-col min-h-screen">
+                  <Header />
+                  <main key={pathname} className="flex-1 animate-mast-arrive">
+                    {children}
+                  </main>
+                  <Footer />
+                </div>
+              </SmoothScrollProvider>
             </ThemeProvider>
         </AuthContext.Provider>
     </FirebaseProvider>

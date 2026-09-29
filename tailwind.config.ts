@@ -56,6 +56,12 @@ export default {
           '4': 'hsl(var(--chart-4))',
           '5': 'hsl(var(--chart-5))',
         },
+        vistara: {
+          crimson: '#790D16',
+          sand: '#E5D3AF',
+          cream: '#F5EFE1',
+          slate: '#AEC4D4',
+        },
         sidebar: {
           DEFAULT: 'hsl(var(--sidebar-background))',
           foreground: 'hsl(var(--sidebar-foreground))',

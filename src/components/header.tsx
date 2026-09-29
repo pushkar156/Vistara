@@ -12,7 +12,6 @@ import {
   Compass, 
   Menu, 
   History, 
-  Check, 
   Sparkles, 
   LogIn, 
   LogOut, 
@@ -56,48 +55,23 @@ const ThemeToggle = () => {
 
   const isDark = resolvedTheme === 'dark';
 
+  const handleToggle = () => {
+    setTheme(isDark ? 'light' : 'dark');
+  };
+
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button 
-          variant="ghost" 
-          size="icon"
-          className="relative h-9 w-9 rounded-full border border-border/50 hover:bg-muted/80 transition-all hover:scale-105 active:scale-95 shadow-xs"
-          title={`Theme: ${isDark ? 'Dark' : 'Light'} (Click to change)`}
-          aria-label="Toggle theme"
-        >
-          <Sun className="h-[1.15rem] w-[1.15rem] rotate-0 scale-100 transition-all duration-300 dark:-rotate-90 dark:scale-0 text-amber-500" />
-          <Moon className="absolute h-[1.15rem] w-[1.15rem] rotate-90 scale-0 transition-all duration-300 dark:rotate-0 dark:scale-100 text-indigo-400" />
-          <span className="sr-only">Toggle theme</span>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-36 p-1.5 border-border/60 bg-popover/95 backdrop-blur-md shadow-xl rounded-xl">
-        <DropdownMenuItem 
-          onClick={() => setTheme("light")}
-          className={`flex items-center gap-2.5 px-3 py-2 cursor-pointer rounded-lg text-sm font-medium transition-colors ${
-            !isDark 
-              ? 'bg-primary/10 text-primary font-semibold' 
-              : 'text-muted-foreground hover:text-foreground'
-          }`}
-        >
-          <Sun className="h-4 w-4 text-amber-500" />
-          <span>Light</span>
-          {!isDark && <Check className="ml-auto h-3.5 w-3.5 text-primary" />}
-        </DropdownMenuItem>
-        <DropdownMenuItem 
-          onClick={() => setTheme("dark")}
-          className={`flex items-center gap-2.5 px-3 py-2 cursor-pointer rounded-lg text-sm font-medium transition-colors ${
-            isDark 
-              ? 'bg-primary/10 text-primary font-semibold' 
-              : 'text-muted-foreground hover:text-foreground'
-          }`}
-        >
-          <Moon className="h-4 w-4 text-indigo-400" />
-          <span>Dark</span>
-          {isDark && <Check className="ml-auto h-3.5 w-3.5 text-primary" />}
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <Button 
+      variant="ghost" 
+      size="icon"
+      onClick={handleToggle}
+      className="relative h-9 w-9 rounded-full border border-border/50 hover:bg-muted/80 transition-all hover:scale-105 active:scale-95 shadow-xs cursor-pointer group"
+      title={`Switch to ${isDark ? 'Light' : 'Dark'} mode`}
+      aria-label="Toggle theme"
+    >
+      <Sun className="h-[1.15rem] w-[1.15rem] rotate-0 scale-100 transition-all duration-300 dark:-rotate-90 dark:scale-0 text-amber-500 group-hover:rotate-45" />
+      <Moon className="absolute h-[1.15rem] w-[1.15rem] rotate-90 scale-0 transition-all duration-300 dark:rotate-0 dark:scale-100 text-mist group-hover:-rotate-12" />
+      <span className="sr-only">Toggle theme</span>
+    </Button>
   );
 };
 
@@ -121,7 +95,7 @@ const UserProfile = () => {
         asChild 
         className="h-9 px-3 rounded-full text-xs font-semibold border-border/60 hover:bg-muted/80 transition-all gap-1.5"
       >
-        <Link href="/login">
+        <Link href="/login" prefetch={true}>
           <LogIn className="h-3.5 w-3.5 text-primary" />
           <span>Sign In</span>
         </Link>
@@ -154,13 +128,13 @@ const UserProfile = () => {
         </div>
         <DropdownMenuSeparator className="my-1.5" />
         <DropdownMenuItem asChild className="cursor-pointer rounded-lg">
-          <Link href="/profile" className="flex items-center gap-2">
+          <Link href="/profile" prefetch={true} className="flex items-center gap-2">
             <UserIcon className="h-4 w-4 text-muted-foreground" />
             <span>My Profile</span>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild className="cursor-pointer rounded-lg">
-          <Link href="/history" className="flex items-center gap-2">
+          <Link href="/history" prefetch={true} className="flex items-center gap-2">
             <History className="h-4 w-4 text-muted-foreground" />
             <span>Saved Simulations</span>
           </Link>
@@ -181,8 +155,26 @@ const UserProfile = () => {
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+  // Optimistic active state: moves immediately at the exact millisecond of clicking!
+  const [activeTab, setActiveTab] = useState(pathname);
+  const [isNavigating, setIsNavigating] = useState(false);
   const { setTheme, resolvedTheme } = useTheme();
   const { user } = useAuth();
+
+  // Sync state once the destination page has completed loading
+  useEffect(() => {
+    setActiveTab(pathname);
+    setIsNavigating(false);
+  }, [pathname]);
+
+  const handleTabClick = (href: string) => {
+    setActiveTab(href); // Immediate visual feedback on click (0ms delay)
+    if (href !== pathname) {
+      setIsNavigating(true);
+      // Failsafe reset if navigation resolves or cancels
+      setTimeout(() => setIsNavigating(false), 3000);
+    }
+  };
 
   const navLinks = [
     { href: '/', label: 'Simulator', icon: Compass },
@@ -191,7 +183,19 @@ export default function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/85 backdrop-blur-md transition-colors">
+    <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/85 backdrop-blur-md transition-colors relative">
+      {/* Top glowing progress line when route is buffering/loading */}
+      {isNavigating && (
+        <div className="absolute top-0 left-0 right-0 h-[2.5px] z-[100] overflow-hidden bg-primary/20">
+          <motion.div
+            className="h-full bg-gradient-to-r from-primary via-vistara-sand to-primary rounded-full shadow-[0_0_12px_rgba(121,13,22,0.8)]"
+            initial={{ x: '-100%', width: '35%' }}
+            animate={{ x: '100%', width: '65%' }}
+            transition={{ repeat: Infinity, duration: 0.8, ease: 'easeInOut' }}
+          />
+        </div>
+      )}
+
       <div className="container mx-auto px-4 flex h-16 items-center justify-between gap-4">
         
         {/* Left: Mobile Trigger & Brand Identity */}
@@ -220,9 +224,9 @@ export default function Header() {
                       </div>
                     </SheetTitle>
                     <div className="mt-2">
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-primary/10 text-primary border border-primary/20">
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-primary/10 text-primary border border-primary/20">
                         <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                        Hackmatrix 5.0 • MISC-01
+                        AI Pathway Simulator
                       </span>
                     </div>
                   </SheetHeader>
@@ -232,9 +236,12 @@ export default function Header() {
                     <Button 
                       asChild 
                       className="w-full justify-center gap-2 rounded-xl bg-primary text-primary-foreground shadow-sm"
-                      onClick={() => setIsOpen(false)}
+                      onClick={() => {
+                        handleTabClick('/');
+                        setIsOpen(false);
+                      }}
                     >
-                      <Link href="/">
+                      <Link href="/" prefetch={true}>
                         <Sparkles className="h-4 w-4" />
                         <span>Launch Simulation</span>
                       </Link>
@@ -244,7 +251,7 @@ export default function Header() {
                   {/* Navigation Links */}
                   <nav className="flex flex-col space-y-1">
                     {navLinks.map((link) => {
-                      const isActive = pathname === link.href;
+                      const isActive = activeTab === link.href;
                       const Icon = link.icon;
                       return (
                         <Button
@@ -254,9 +261,12 @@ export default function Header() {
                             isActive ? 'font-bold text-primary bg-primary/10' : 'text-foreground/80'
                           }`}
                           asChild
-                          onClick={() => setIsOpen(false)}
+                          onClick={() => {
+                            handleTabClick(link.href);
+                            setIsOpen(false);
+                          }}
                         >
-                          <Link href={link.href}>
+                          <Link href={link.href} prefetch={true}>
                             <span className="flex items-center gap-2.5">
                               <Icon className="h-4 w-4 text-primary" />
                               <span>{link.label}</span>
@@ -327,7 +337,7 @@ export default function Header() {
                           className="h-7 px-2 text-xs"
                           onClick={() => setIsOpen(false)}
                         >
-                          <Link href="/profile">Profile</Link>
+                          <Link href="/profile" prefetch={true}>Profile</Link>
                         </Button>
                       </div>
                     ) : (
@@ -337,7 +347,7 @@ export default function Header() {
                         className="w-full justify-center gap-2 h-9 rounded-xl text-xs font-semibold"
                         onClick={() => setIsOpen(false)}
                       >
-                        <Link href="/login">
+                        <Link href="/login" prefetch={true}>
                           <LogIn className="h-3.5 w-3.5 text-primary" />
                           <span>Sign In / Register</span>
                         </Link>
@@ -350,7 +360,12 @@ export default function Header() {
           </div>
 
           {/* Desktop & Tablet Logo */}
-          <Link href="/" className="flex items-center space-x-2.5 group">
+          <Link 
+            href="/" 
+            prefetch={true} 
+            onClick={() => handleTabClick('/')}
+            className="flex items-center space-x-2.5 group"
+          >
             <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-primary to-primary/70 flex items-center justify-center text-primary-foreground shadow-sm shadow-primary/30 transition-transform group-hover:scale-105">
               <Compass className="h-5 w-5" />
             </div>
@@ -364,22 +379,24 @@ export default function Header() {
             </div>
           </Link>
 
-          {/* Track Badge */}
+          {/* Platform Status Badge */}
           <div className="hidden lg:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-primary/10 text-primary border border-primary/20">
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            <span>Hackmatrix 5.0 • MISC-01</span>
+            <span>Empirical Career Intelligence</span>
           </div>
         </div>
 
-        {/* Center: Frosted Pill Navigation */}
+        {/* Center: Frosted Pill Navigation with Instant 0ms Click Movement */}
         <nav className="hidden md:flex items-center gap-1 bg-muted/50 p-1 rounded-full border border-border/50 shadow-inner">
           {navLinks.map((link) => {
-            const isActive = pathname === link.href;
+            const isActive = activeTab === link.href;
             const Icon = link.icon;
             return (
               <Link
                 key={link.href}
                 href={link.href}
+                prefetch={true}
+                onClick={() => handleTabClick(link.href)}
                 className={`relative px-4 py-1.5 rounded-full text-xs font-medium transition-all duration-200 flex items-center gap-1.5 select-none ${
                   isActive
                     ? 'text-primary-foreground font-bold shadow-xs'
@@ -390,7 +407,7 @@ export default function Header() {
                   <motion.div
                     layoutId="activeHeaderNavPill"
                     className="absolute inset-0 bg-primary rounded-full shadow-sm"
-                    transition={{ type: 'spring', stiffness: 450, damping: 32 }}
+                    transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                   />
                 )}
                 <span className="relative z-10 flex items-center gap-1.5">
@@ -408,9 +425,10 @@ export default function Header() {
           <Button
             asChild
             size="sm"
+            onClick={() => handleTabClick('/')}
             className="hidden sm:inline-flex h-9 px-3.5 rounded-full text-xs font-semibold bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm shadow-primary/20 gap-1.5 hover-lift"
           >
-            <Link href="/">
+            <Link href="/" prefetch={true}>
               <Sparkles className="h-3.5 w-3.5" />
               <span>New Simulation</span>
             </Link>

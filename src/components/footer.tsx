@@ -9,16 +9,15 @@ import {
   Building2, 
   TrendingUp, 
   ArrowUp, 
-  Heart, 
   Award, 
   BookOpen, 
-  Users, 
-  CheckCircle2, 
   ShieldCheck,
-  FileText
+  CheckCircle2,
+  Scale,
+  Calculator,
+  ArrowRight
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 
 export default function Footer() {
   const scrollToTop = () => {
@@ -27,190 +26,179 @@ export default function Footer() {
     }
   };
 
-  const teamMembers = [
-    { name: 'Mitali Agrawal', role: 'Senior Developer' },
-    { name: 'Pushkar Gangurde', role: 'Senior Developer' },
-    { name: 'Purvesh Gandhi', role: 'Junior Developer' },
-    { name: 'Atharva Rathi', role: 'Junior Developer' },
-  ];
-
   return (
-    <footer className="no-print mt-auto border-t border-border/50 bg-card/60 backdrop-blur-md text-foreground transition-colors">
-      {/* Top Banner with Hackathon & AI Status */}
-      <div className="border-b border-border/40 bg-muted/30">
-        <div className="container mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3 text-xs">
-          <div className="flex items-center gap-2">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-            </span>
-            <span className="font-medium text-muted-foreground">Vistara Simulation Engine v2.4</span>
-            <span className="hidden sm:inline text-muted-foreground/60">•</span>
-            <span className="hidden sm:inline text-muted-foreground">Autonomous Class 10 to Career Path Modeler</span>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <Badge variant="outline" className="text-[11px] font-semibold border-primary/30 text-primary bg-primary/5">
-              Hackmatrix 5.0 • Track MISC — 01
-            </Badge>
-            <span className="text-muted-foreground">Team Nonchalants</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Footer Grid */}
-      <div className="container mx-auto px-4 py-12 md:py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
+    <footer className="no-print mt-auto border-t border-border/40 bg-card/40 backdrop-blur-xl text-foreground transition-colors">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-14 lg:py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-12">
           
-          {/* Column 1: Brand & Mission (Spans 2 columns on lg) */}
-          <div className="lg:col-span-2 space-y-4">
+          {/* Brand & Overview Column (Spans 4 columns on desktop) */}
+          <div className="lg:col-span-4 space-y-5">
             <Link href="/" className="inline-flex items-center space-x-2.5 group">
-              <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-primary to-primary/60 flex items-center justify-center text-primary-foreground shadow-md shadow-primary/20 transition-transform group-hover:scale-105">
+              <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-primary to-primary/70 flex items-center justify-center text-primary-foreground shadow-sm shadow-primary/25 transition-transform group-hover:scale-105">
                 <Compass className="h-5 w-5" />
               </div>
               <div>
-                <span className="font-headline font-bold text-2xl tracking-tight bg-gradient-to-r from-foreground via-foreground to-foreground/80 bg-clip-text text-transparent">
+                <span className="font-headline font-bold text-2xl tracking-tight text-foreground">
                   Vistara
                 </span>
-                <span className="block text-[10px] uppercase tracking-widest font-semibold text-primary -mt-1">
-                  Career Path Simulator
+                <span className="block text-[9px] uppercase tracking-widest font-semibold text-primary -mt-1">
+                  Career Intelligence Engine
                 </span>
               </div>
             </Link>
 
-            <p className="text-sm text-muted-foreground leading-relaxed max-w-md">
-              Demystifying the critical leap from secondary school (Class 10) to rewarding careers. Vistara generates multi-scenario academic trajectories, entrance exam roadmaps, NIRF college cutoffs, 10-year loan repayment calculations, and real-time contingency pathways.
+            <p className="text-sm text-muted-foreground leading-relaxed max-w-sm">
+              An advanced decision-support platform designed to help students and parents navigate the transition from Class 10 to long-term professional careers. Modeled on verified entrance cutoffs, global tuition structures, and empirical financial ROI.
             </p>
 
-            <div className="pt-2 flex flex-wrap gap-2">
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs bg-muted/60 text-muted-foreground border border-border/50">
+            <div className="flex flex-wrap gap-2 pt-1">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-medium bg-muted/60 text-muted-foreground border border-border/50">
                 <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />
-                <span>NEP 2020 Aligned</span>
-              </div>
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs bg-muted/60 text-muted-foreground border border-border/50">
+                NEP 2020 Aligned
+              </span>
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-medium bg-muted/60 text-muted-foreground border border-border/50">
                 <TrendingUp className="h-3.5 w-3.5 text-blue-500" />
-                <span>10-Yr Loan ROI Simulator</span>
-              </div>
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs bg-muted/60 text-muted-foreground border border-border/50">
+                10-Year Loan Amortization
+              </span>
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-medium bg-muted/60 text-muted-foreground border border-border/50">
                 <Award className="h-3.5 w-3.5 text-amber-500" />
-                <span>Government & Merit Aid</span>
-              </div>
+                Merit & Govt Aid Matcher
+              </span>
             </div>
           </div>
 
-          {/* Column 2: Platform Navigation */}
-          <div className="space-y-3">
+          {/* Column 2: Capabilities & Simulations (Spans 3 cols) */}
+          <div className="lg:col-span-3 space-y-3.5">
             <h4 className="text-xs font-bold uppercase tracking-wider text-foreground">
-              Navigation
+              Simulation Modules
             </h4>
-            <ul className="space-y-2 text-sm text-muted-foreground">
+            <ul className="space-y-2.5 text-sm text-muted-foreground">
               <li>
-                <Link href="/" className="hover:text-primary transition-colors flex items-center gap-1.5">
-                  <Compass className="h-3.5 w-3.5" />
-                  <span>Simulator Cockpit</span>
+                <Link href="/" className="hover:text-primary transition-colors flex items-center gap-2">
+                  <span className="h-1.5 w-1.5 rounded-full bg-primary/60" />
+                  <span>AI Multi-Pathway Modeler</span>
                 </Link>
               </li>
               <li>
-                <Link href="/about" className="hover:text-primary transition-colors flex items-center gap-1.5">
-                  <Users className="h-3.5 w-3.5" />
-                  <span>About Us & Mission</span>
+                <Link href="/" className="hover:text-primary transition-colors flex items-center gap-2">
+                  <span className="h-1.5 w-1.5 rounded-full bg-primary/60" />
+                  <span>College Cutoff & Tier Benchmarking</span>
                 </Link>
               </li>
               <li>
-                <Link href="/history" className="hover:text-primary transition-colors flex items-center gap-1.5">
-                  <FileText className="h-3.5 w-3.5" />
-                  <span>Saved Simulations</span>
+                <Link href="/" className="hover:text-primary transition-colors flex items-center gap-2">
+                  <span className="h-1.5 w-1.5 rounded-full bg-primary/60" />
+                  <span>Relative Cost of Borrowing (RCB)</span>
                 </Link>
               </li>
               <li>
-                <Link href="/profile" className="hover:text-primary transition-colors flex items-center gap-1.5">
-                  <span>Candidate Profile</span>
+                <Link href="/" className="hover:text-primary transition-colors flex items-center gap-2">
+                  <span className="h-1.5 w-1.5 rounded-full bg-primary/60" />
+                  <span>Scholarship & Grants Discovery</span>
                 </Link>
               </li>
               <li>
-                <Link href="/login" className="hover:text-primary transition-colors flex items-center gap-1.5">
-                  <span>Sign In / Register</span>
+                <Link href="/" className="hover:text-primary transition-colors flex items-center gap-2">
+                  <span className="h-1.5 w-1.5 rounded-full bg-primary/60" />
+                  <span>What-If Academic Contingencies</span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/" className="hover:text-primary transition-colors flex items-center gap-2">
+                  <span className="h-1.5 w-1.5 rounded-full bg-primary/60" />
+                  <span>Multi-Criteria Decision Matrix</span>
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Column 3: Simulation Engines */}
-          <div className="space-y-3">
+          {/* Column 3: Academic Streams & Guidance (Spans 3 cols) */}
+          <div className="lg:col-span-3 space-y-3.5">
             <h4 className="text-xs font-bold uppercase tracking-wider text-foreground">
-              Core Capabilities
+              Target Disciplines
             </h4>
-            <ul className="space-y-2 text-sm text-muted-foreground">
+            <ul className="space-y-2.5 text-sm text-muted-foreground">
               <li className="flex items-center gap-2">
-                <CheckCircle2 className="h-3.5 w-3.5 text-primary" />
-                <span>AI Multi-Path Generation</span>
+                <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/40" />
+                <span>Science PCM (Engineering, CS & AI)</span>
               </li>
               <li className="flex items-center gap-2">
-                <CheckCircle2 className="h-3.5 w-3.5 text-primary" />
-                <span>Dual-Track Milestones</span>
+                <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/40" />
+                <span>Science PCB (Medicine, Biotech & Health)</span>
               </li>
               <li className="flex items-center gap-2">
-                <CheckCircle2 className="h-3.5 w-3.5 text-primary" />
-                <span>Institutional Tier Ranking</span>
+                <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/40" />
+                <span>Commerce (Finance, CA, Analytics & Tech)</span>
               </li>
               <li className="flex items-center gap-2">
-                <CheckCircle2 className="h-3.5 w-3.5 text-primary" />
-                <span>Scholarship & Aid Matcher</span>
+                <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/40" />
+                <span>Arts & Design (UI/UX, Media, Policy & Law)</span>
               </li>
               <li className="flex items-center gap-2">
-                <CheckCircle2 className="h-3.5 w-3.5 text-primary" />
-                <span>EMI & Amortization Curve</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="h-3.5 w-3.5 text-primary" />
-                <span>What-If Decision Matrix</span>
+                <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/40" />
+                <span>Global Pathways (Tuition-Free Europe)</span>
               </li>
             </ul>
           </div>
 
-          {/* Column 4: Team Nonchalants Credits */}
-          <div className="space-y-3">
+          {/* Column 4: Quick Navigation (Spans 2 cols) */}
+          <div className="lg:col-span-2 space-y-3.5">
             <h4 className="text-xs font-bold uppercase tracking-wider text-foreground">
-              Team Nonchalants
+              Platform
             </h4>
-            <div className="space-y-2 text-sm">
-              {teamMembers.map((member, i) => (
-                <div key={i} className="flex flex-col">
-                  <span className="font-medium text-foreground">{member.name}</span>
-                  <span className="text-xs text-muted-foreground">{member.role}</span>
-                </div>
-              ))}
-              <div className="pt-2 text-xs text-muted-foreground border-t border-border/40">
-                Created for <strong className="text-foreground">Hackmatrix 5.0</strong>
-              </div>
-            </div>
+            <ul className="space-y-2.5 text-sm text-muted-foreground">
+              <li>
+                <Link href="/" className="hover:text-primary transition-colors">
+                  Simulator Cockpit
+                </Link>
+              </li>
+              <li>
+                <Link href="/about" className="hover:text-primary transition-colors">
+                  About Platform
+                </Link>
+              </li>
+              <li>
+                <Link href="/history" className="hover:text-primary transition-colors">
+                  Saved Roadmaps
+                </Link>
+              </li>
+              <li>
+                <Link href="/profile" className="hover:text-primary transition-colors">
+                  Candidate Profile
+                </Link>
+              </li>
+              <li>
+                <Link href="/login" className="hover:text-primary transition-colors">
+                  Sign In / Register
+                </Link>
+              </li>
+            </ul>
           </div>
 
         </div>
 
-        {/* Bottom Bar: Copyright, Disclaimer, Back to Top */}
+        {/* Bottom Legal & Copyright Bar */}
         <div className="mt-12 pt-8 border-t border-border/40 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
-          <div className="flex flex-col md:flex-row items-center gap-2 text-center md:text-left">
-            <span>© 2026 Vistara by Team Nonchalants. All rights reserved.</span>
-            <span className="hidden md:inline">•</span>
-            <span>Built with Next.js, Tailwind CSS & Generative AI</span>
+          <div className="flex flex-col sm:flex-row items-center gap-2 text-center md:text-left">
+            <span>© 2026 Vistara Technologies. All rights reserved.</span>
+            <span className="hidden sm:inline">•</span>
+            <span>Empirical Class 10 to Career Intelligence</span>
           </div>
 
-          <div className="flex items-center gap-4">
-            <span className="text-center md:text-right text-[11px] text-muted-foreground/80 max-w-sm">
-              Predictive models based on NIRF 2024 benchmarks & RBI educational loan guidelines.
-            </span>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={scrollToTop}
-              className="h-8 px-2.5 rounded-lg border-border/60 hover:bg-muted transition-all"
-              title="Back to Top"
-            >
-              <ArrowUp className="h-4 w-4 mr-1 text-primary" />
-              <span>Top</span>
-            </Button>
-          </div>
+          <p className="text-center md:text-right text-[11px] text-muted-foreground/70 max-w-md leading-relaxed">
+            Guidance models calibrated against national NIRF benchmarks, competitive exam cutoffs, and standard educational loan amortization formulas.
+          </p>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={scrollToTop}
+            className="h-8 px-3 rounded-lg border-border/60 hover:bg-muted/80 text-xs transition-all shrink-0"
+            title="Back to Top"
+          >
+            <ArrowUp className="h-3.5 w-3.5 mr-1 text-primary" />
+            <span>Top</span>
+          </Button>
         </div>
       </div>
     </footer>

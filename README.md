@@ -123,4 +123,8 @@ Open [http://localhost:9002](http://localhost:9002) in your browser.
 ---
 
 
-## 👥 Team Nonchalants
+## 👥 Engineering & Architecture Team
+- **Pushkar Gangurde** — Grand Simulation Architect & Quantum Horizon Lead ✦ *(Lead Architect)*
+- **Nupur Mehta** — Chief Neural Pathway Strategist & Cognitive UX Sorceress
+- **Varad Kotkar** — Chief Algorithmic Cartographer & Financial ROI Warlock
+- **Aryan Shinde** — Director of Predictive Trajectories & Chaos Matrix Engineering

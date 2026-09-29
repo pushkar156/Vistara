@@ -46,6 +46,7 @@ import { InteractiveQuestionnaire } from '@/components/interactive-questionnaire
 import { StudentProfile, DEMO_PRESET_PROFILES } from '@/types/student-profile';
 
 import { getPresetSimulationById, getInstantSimulation } from '@/lib/preset-simulations';
+import { useHistory } from '@/hooks/use-history';
 
 const FormSchema = z.object({
   desiredCareer: z.string().min(3, {
@@ -76,21 +77,31 @@ function LoadingSimulationView({ onCancel }: { onCancel: () => void }) {
   }, [steps.length]);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[85vh] text-center p-6 space-y-8 animate-subtle-in">
+    <div className="flex flex-col items-center justify-center min-h-[85vh] text-center p-6 space-y-8 animate-mast-arrive select-none">
       <div className="relative flex items-center justify-center">
         {/* Soft glowing ambient rings */}
         <motion.div
-          animate={{ scale: [1, 1.25, 1], opacity: [0.15, 0.35, 0.15] }}
-          transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute w-44 h-44 rounded-full bg-primary/20 blur-2xl pointer-events-none"
+          animate={{ scale: [1, 1.25, 1], opacity: [0.15, 0.4, 0.15] }}
+          transition={{ duration: 2.8, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute w-52 h-52 rounded-full bg-primary/25 blur-3xl pointer-events-none"
         />
         <motion.div
-          animate={{ scale: [1, 1.15, 1], opacity: [0.2, 0.4, 0.2] }}
-          transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
-          className="absolute w-32 h-32 rounded-full bg-emerald-500/15 blur-xl pointer-events-none"
+          animate={{ scale: [1, 1.15, 1], opacity: [0.15, 0.35, 0.15] }}
+          transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
+          className="absolute w-36 h-36 rounded-full bg-secondary/35 blur-2xl pointer-events-none"
         />
-        <div className="relative p-6 rounded-3xl bg-card/90 border border-primary/30 shadow-2xl backdrop-blur-md">
-          <Loader2 className="h-12 w-12 animate-spin text-primary" />
+
+        {/* Orbiting particles */}
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
+          className="absolute w-28 h-28 rounded-full border border-primary/25 pointer-events-none"
+        >
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-secondary shadow-md shadow-secondary" />
+        </motion.div>
+
+        <div className="relative p-6 rounded-3xl bg-card/90 border border-primary/30 shadow-2xl backdrop-blur-xl">
+          <Compass className="h-11 w-11 animate-spin text-primary" style={{ animationDuration: '4s' }} />
         </div>
       </div>
 
@@ -104,8 +115,10 @@ function LoadingSimulationView({ onCancel }: { onCancel: () => void }) {
           Simulating Academic Horizons
         </h2>
 
-        {/* Shimmer line progress bar */}
-        <div className="w-full h-1.5 rounded-full bg-muted overflow-hidden shimmer-line border border-border/40" />
+        {/* High-tech dual-tone shimmer progress bar */}
+        <div className="relative w-full h-1.5 rounded-full bg-muted/60 overflow-hidden border border-border/50 shadow-inner">
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary to-transparent animate-mast-beam" />
+        </div>
 
         {/* Dynamic cycling step text with subtle fade */}
         <div className="h-6 flex items-center justify-center">
@@ -145,6 +158,7 @@ export default function MainPage() {
   const [studentProfile, setStudentProfile] = useState<StudentProfile | null>(null);
   const [directSearchMode, setDirectSearchMode] = useState(false);
   const { toast } = useToast();
+  const { addHistoryItem } = useHistory();
 
   const form = useForm<UserInput>({
     resolver: zodResolver(FormSchema),
@@ -169,18 +183,30 @@ export default function MainPage() {
         interests: inputData.interests,
       });
 
+      let resultData: CareerPathOutput;
       if (response.success) {
-        setFinalResult(response.data);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        resultData = response.data;
       } else {
         // Fallback to instant simulation so user is never stuck
-        const instantFallback = getInstantSimulation(inputData.desiredCareer, inputData.interests);
-        setFinalResult(instantFallback);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        resultData = getInstantSimulation(inputData.desiredCareer, inputData.interests);
       }
+      setFinalResult(resultData);
+      addHistoryItem({
+        generatedCareer: inputData.desiredCareer,
+        roadmapDetails: resultData,
+        aiPrompt: `Class 10 Intake: ${inputData.desiredCareer} (${inputData.currentRole || 'Student'})`,
+        studentProfile: profile || studentProfile || undefined,
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (error) {
       const instantFallback = getInstantSimulation(inputData.desiredCareer, inputData.interests);
       setFinalResult(instantFallback);
+      addHistoryItem({
+        generatedCareer: inputData.desiredCareer,
+        roadmapDetails: instantFallback,
+        aiPrompt: `Class 10 Intake: ${inputData.desiredCareer} (${inputData.currentRole || 'Student'})`,
+        studentProfile: profile || studentProfile || undefined,
+      });
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } finally {
       setLoading(false);
@@ -230,6 +256,12 @@ export default function MainPage() {
     }
 
     setFinalResult(instantData);
+    addHistoryItem({
+      generatedCareer: careerTarget,
+      roadmapDetails: instantData,
+      aiPrompt: `Class 10 Profile Intake: ${presetProfile.studentName} (${presetProfile.class10Board} ${presetProfile.class10Percentage}%)`,
+      studentProfile: presetProfile,
+    });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -262,13 +294,14 @@ export default function MainPage() {
     return <LoadingSimulationView onCancel={handleReset} />;
   }
 
-  // Active Simulation View (Career Roadmap Dashboard with Subtle Entrance)
+  // Active Simulation View (Career Roadmap Dashboard with Mast Entrance)
   if (finalResult && userInput) {
     return (
       <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+        initial={{ opacity: 0, y: 16, scale: 0.992 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.48, ease: [0.16, 1, 0.3, 1] }}
+        className="animate-mast-arrive"
       >
         <CareerRoadmap
           data={finalResult}
@@ -282,25 +315,25 @@ export default function MainPage() {
     );
   }
 
-  // Primary Landing Page: Decision Cockpit with Subtle Entrance
+  // Primary Landing Page: Decision Cockpit with Mast Arrival
   return (
     <motion.div
-      initial={{ opacity: 0, y: 6 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+      initial={{ opacity: 0, y: 16, scale: 0.995 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.48, ease: [0.16, 1, 0.3, 1] }}
       className="min-h-screen"
     >
       {/* Hero Section */}
       <section className="relative overflow-hidden pt-12 pb-16 md:pt-20 md:pb-24 px-4 sm:px-6">
         {/* Ambient glow backgrounds */}
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-primary/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute top-1/3 left-1/4 w-[300px] h-[250px] bg-emerald-500/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-1/3 left-1/4 w-[300px] h-[250px] bg-secondary/30 rounded-full blur-3xl pointer-events-none" />
 
         <div className="max-w-5xl mx-auto text-center space-y-6 relative z-10">
-          {/* Hackathon Badge */}
+          {/* Platform Badge */}
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-semibold shadow-sm">
             <School className="h-3.5 w-3.5" />
-            <span>Hackmatrix 5.0 • Track MISC — 01 • Career Path Simulator</span>
+            <span>Class 10 to Career • Next-Gen Decision Support</span>
           </div>
 
           {/* Main Headline */}

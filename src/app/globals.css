@@ -4,58 +4,60 @@
 
 @layer base {
   :root {
-    --background: 210 40% 98%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
+    /* Palette: #790D16 (Crimson), #E5D3AF (Warm Sand), #F5EFE1 (Alabaster Cream), #AEC4D4 (Mist Slate) */
+    --background: 42 46% 93%; /* #F5EFE1 warm alabaster cream */
+    --foreground: 355 35% 12%; /* Deep garnet-charcoal */
+    --card: 42 35% 97%; /* Soft ivory cream card */
+    --card-foreground: 355 35% 12%;
+    --popover: 42 35% 97%;
+    --popover-foreground: 355 35% 12%;
+    --primary: 355 81% 26%; /* #790D16 Deep Crimson */
+    --primary-foreground: 42 46% 96%; /* #F5EFE1 */
+    --secondary: 40 51% 79%; /* #E5D3AF Warm Sand */
+    --secondary-foreground: 355 81% 20%;
+    --muted: 42 25% 87%;
+    --muted-foreground: 355 15% 42%;
+    --accent: 205 33% 76%; /* #AEC4D4 Mist Slate Blue */
+    --accent-foreground: 205 50% 18%;
+    --destructive: 0 84% 45%;
+    --destructive-foreground: 42 46% 96%;
+    --border: 40 35% 82%; /* #E5D3AF inspired warm border */
+    --input: 40 35% 82%;
+    --ring: 355 81% 26%; /* #790D16 */
     --radius: 0.85rem;
-    --chart-1: 221.2 83.2% 53.3%;
-    --chart-2: 160 84% 39%;
-    --chart-3: 38 92% 50%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 346 84% 61%;
+    --chart-1: 355 81% 26%; /* #790D16 */
+    --chart-2: 205 33% 76%; /* #AEC4D4 */
+    --chart-3: 40 51% 79%; /* #E5D3AF */
+    --chart-4: 355 60% 48%;
+    --chart-5: 205 40% 45%;
   }
 
   .dark {
-    --background: 224 71.4% 4.1%;
-    --foreground: 210 40% 98%;
-    --card: 224 71.4% 5.5%;
-    --card-foreground: 210 40% 98%;
-    --popover: 224 71.4% 5.5%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 48%;
-    --chart-1: 217.2 91.2% 59.8%;
-    --chart-2: 160 84% 39%;
-    --chart-3: 38 92% 50%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 346 84% 61%;
+    /* Refined Deep Obsidian Neutral with Garnet Crimson (#790D16) & Champagne (#E5D3AF) Accents */
+    --background: 220 18% 7%; /* Deep obsidian slate #0f1115 - calm and neutral, not neon red */
+    --foreground: 42 40% 93%; /* #F5EFE1 warm alabaster cream text */
+    --card: 220 16% 10%; /* Dark charcoal card #14171d */
+    --card-foreground: 42 40% 93%;
+    --popover: 220 16% 10%;
+    --popover-foreground: 42 40% 93%;
+    --primary: 355 72% 44%; /* #c41e2b Deep Garnet Crimson accent - balanced & sophisticated */
+    --primary-foreground: 42 46% 96%; /* #F5EFE1 */
+    --secondary: 220 12% 14%; /* Sleek neutral secondary surface */
+    --secondary-foreground: 40 51% 80%; /* #E5D3AF Champagne Sand */
+    --muted: 220 12% 13%;
+    --muted-foreground: 205 16% 66%; /* #AEC4D4 Mist Slate */
+    --accent: 220 14% 16%;
+    --accent-foreground: 42 40% 93%;
+    --destructive: 0 62% 45%;
+    --destructive-foreground: 42 46% 96%;
+    --border: 220 12% 16%; /* Calmed, subtle dark border */
+    --input: 220 12% 16%;
+    --ring: 355 72% 44%;
+    --chart-1: 355 72% 44%;
+    --chart-2: 205 33% 70%; /* #AEC4D4 */
+    --chart-3: 40 51% 75%; /* #E5D3AF */
+    --chart-4: 355 50% 58%;
+    --chart-5: 205 28% 52%;
   }
 }
 
@@ -73,12 +75,33 @@
 .glass-panel {
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  background-color: hsl(var(--card) / 0.8);
+  background-color: hsl(var(--card) / 0.85);
   border: 1px solid hsl(var(--border) / 0.6);
 }
 
 .gradient-glow {
-  background: radial-gradient(circle at 50% 0%, hsl(var(--primary) / 0.15) 0%, transparent 70%);
+  background: radial-gradient(circle at 50% 0%, hsl(var(--primary) / 0.18) 0%, transparent 70%);
+}
+
+/* Lenis Smooth Scroll Core Rules */
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
 }
 
 /* Subtle Site-wide Micro-interactions and Transition Animations */
@@ -95,6 +118,56 @@
 
 .animate-subtle-in {
   animation: subtle-entrance 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Mast Cinematic Entrance & Arriving Keyframes */
+@keyframes mast-arrive {
+  0% {
+    opacity: 0;
+    transform: translateY(16px) scale(0.992);
+    filter: blur(5px);
+  }
+  60% {
+    opacity: 0.95;
+    filter: blur(0.5px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0px);
+  }
+}
+
+.animate-mast-arrive {
+  animation: mast-arrive 0.52s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes mast-halo-pulse {
+  0%, 100% {
+    transform: scale(0.96);
+    opacity: 0.25;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0.6;
+  }
+}
+
+.animate-mast-halo {
+  animation: mast-halo-pulse 2.8s ease-in-out infinite;
+}
+
+@keyframes mast-beam {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(200%);
+  }
+}
+
+.animate-mast-beam {
+  animation: mast-beam 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
 @keyframes subtle-pulse-glow {
@@ -133,7 +206,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(90deg, transparent, hsl(var(--primary) / 0.35), transparent);
+  background: linear-gradient(90deg, transparent, hsl(var(--primary) / 0.4), transparent);
   animation: shimmer-slide 1.8s infinite;
 }
 
@@ -144,7 +217,7 @@
 
 .hover-lift:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 10px 25px -5px rgba(121, 13, 22, 0.12), 0 8px 10px -6px rgba(121, 13, 22, 0.06);
 }
 
 /* Print Styles for Family Action Plan PDF Export */
