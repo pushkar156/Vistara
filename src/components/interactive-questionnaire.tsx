@@ -53,7 +53,7 @@ interface InteractiveQuestionnaireProps {
 }
 
 const defaultProfileValues: StudentProfile = {
-  studentName: '',
+  studentName: 'Aspirant',
   targetRoleOrDomain: '',
   isDreamOpen: true,
   class10Board: 'CBSE',

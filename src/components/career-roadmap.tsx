@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import type {
   CareerPathOutput,
   EducationPathway,
@@ -92,6 +93,7 @@ export function CareerRoadmap({
   const { addHistoryItem } = useHistory();
   const { toast } = useToast();
   const [isSaving, setIsSaving] = useState(false);
+  const [collegesSubTab, setCollegesSubTab] = useState<'comparator' | 'scholarships'>('comparator');
 
   const currentPathway: EducationPathway | null = pathways[activePathwayIndex] || pathways[0] || null;
 
@@ -327,9 +329,13 @@ export function CareerRoadmap({
           </div>
 
           <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" onClick={() => window.print()} className="gap-1.5 hidden sm:inline-flex">
+              <Download className="h-4 w-4" />
+              Print / PDF
+            </Button>
             <Button variant="outline" size="sm" onClick={onBackToRoleSelection} className="gap-1.5">
               <ArrowLeft className="h-4 w-4" />
-              Change Query
+              Edit Profile
             </Button>
             <Button variant="outline" size="sm" onClick={onReset} className="text-muted-foreground">
               New Simulation
@@ -480,49 +486,51 @@ export function CareerRoadmap({
 
           {/* Right Column: Multi-Pathway & Resource Tabs */}
           <main className="lg:col-span-2 space-y-6">
-            <Tabs value={selectedTab} onValueChange={setSelectedTab} className="w-full">
-              <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-1 p-1 h-auto bg-muted/60">
-                {pathways.length > 0 && (
-                  <TabsTrigger value="pathways" className="text-xs font-semibold gap-1.5 py-2">
-                    <Route className="h-3.5 w-3.5" />
-                    Pathways
-                  </TabsTrigger>
-                )}
-                <TabsTrigger value="decision-matrix" className="text-xs font-semibold gap-1.5 py-2">
-                  <Scale className="h-3.5 w-3.5" />
-                  Decision Matrix
-                </TabsTrigger>
-                <TabsTrigger value="what-if" className="text-xs font-semibold gap-1.5 py-2">
-                  <HelpCircle className="h-3.5 w-3.5" />
-                  What-If Pivots
-                </TabsTrigger>
-                <TabsTrigger value="institutions" className="text-xs font-semibold gap-1.5 py-2">
-                  <Building2 className="h-3.5 w-3.5" />
-                  Colleges
-                </TabsTrigger>
-                <TabsTrigger value="scholarships" className="text-xs font-semibold gap-1.5 py-2">
-                  <Award className="h-3.5 w-3.5" />
-                  Scholarships
-                </TabsTrigger>
-                <TabsTrigger value="loans" className="text-xs font-semibold gap-1.5 py-2">
-                  <Calculator className="h-3.5 w-3.5" />
-                  Loans & EMI
-                </TabsTrigger>
-                <TabsTrigger value="learning-path" className="text-xs font-semibold gap-1.5 py-2">
-                  <Goal className="h-3.5 w-3.5" />
-                  Roadmap
-                </TabsTrigger>
-                <TabsTrigger value="resources" className="text-xs font-semibold gap-1.5 py-2">
-                  <BookOpen className="h-3.5 w-3.5" />
-                  Resources
-                </TabsTrigger>
-              </TabsList>
+            <div className="w-full">
+              {/* Ultra-Fast Instant Tab Bar with Sliding Active Line Animation */}
+              <div className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-1.5 p-1.5 h-auto bg-muted/70 rounded-xl border border-border/50 shadow-sm relative">
+                {[
+                  ...(pathways.length > 0 ? [{ id: 'pathways', label: 'Pathways', icon: Route, color: 'text-primary' }] : []),
+                  { id: 'decision-matrix', label: 'Decision Matrix', icon: Scale, color: 'text-purple-600 dark:text-purple-400' },
+                  { id: 'what-if', label: 'What-If Pivots', icon: HelpCircle, color: 'text-amber-600 dark:text-amber-400' },
+                  { id: 'colleges-aid', label: 'Colleges & Aid', icon: Building2, color: 'text-emerald-600 dark:text-emerald-400' },
+                  { id: 'loans', label: 'Loans & RCB', icon: Calculator, color: 'text-blue-600 dark:text-blue-400' },
+                  { id: 'learning-path', label: 'Curriculum & Prep', icon: Goal, color: 'text-indigo-600 dark:text-indigo-400' },
+                ].map((tab) => {
+                  const isActive = selectedTab === tab.id;
+                  const Icon = tab.icon;
+                  return (
+                    <button
+                      key={tab.id}
+                      type="button"
+                      onClick={() => setSelectedTab(tab.id)}
+                      className={`relative text-xs font-bold flex items-center justify-center gap-1.5 py-3 px-2 rounded-lg transition-colors cursor-pointer select-none ${
+                        isActive
+                          ? 'bg-card text-foreground shadow-sm'
+                          : 'text-muted-foreground hover:text-foreground hover:bg-muted/40'
+                      }`}
+                    >
+                      <Icon className={`h-3.5 w-3.5 ${tab.color}`} />
+                      <span>{tab.label}</span>
+
+                      {/* Smooth Sliding Active Tab Indicator Line */}
+                      {isActive && (
+                        <motion.div
+                          layoutId="activeWorkspaceTabUnderline"
+                          className="absolute bottom-0 left-2 right-2 h-[3px] bg-primary rounded-full shadow-[0_0_10px_rgba(59,130,246,0.6)]"
+                          transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+                        />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
 
               {/* TAB 1: SIMULATED MULTI-PATHWAYS */}
               {pathways.length > 0 && (
-                <TabsContent value="pathways" className="mt-4 space-y-5 animate-in fade-in duration-300">
+                <div className={selectedTab === 'pathways' ? 'block mt-4 space-y-5 animate-subtle-in' : 'hidden'}>
 
-                  {/* Pathway Switcher Pills */}
+                  {/* Pathway Switcher Pills with Sliding Indicator */}
                   <div className="flex flex-col sm:flex-row gap-2">
                     {pathways.map((p, index) => {
                       const isActive = index === activePathwayIndex;
@@ -533,7 +541,7 @@ export function CareerRoadmap({
                           onClick={() => setActivePathwayIndex(index)}
                           className={`flex-1 p-3.5 rounded-xl border text-left transition-all relative ${
                             isActive
-                              ? 'bg-card border-primary ring-2 ring-primary/20 shadow-md font-semibold'
+                              ? 'bg-card border-primary/80 ring-1 ring-primary/20 shadow-md font-semibold'
                               : 'bg-card/40 border-border/60 hover:bg-card/80 text-muted-foreground'
                           }`}
                         >
@@ -542,6 +550,15 @@ export function CareerRoadmap({
                             {getCategoryBadge(p.category)}
                           </div>
                           <p className="text-xs font-medium text-foreground line-clamp-1">{p.pathwayTitle}</p>
+
+                          {/* Active Pathway Underline Line */}
+                          {isActive && (
+                            <motion.div
+                              layoutId="activePathwayPillUnderline"
+                              className="absolute bottom-0 left-3 right-3 h-[2.5px] bg-primary rounded-full shadow-[0_0_8px_rgba(59,130,246,0.5)]"
+                              transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+                            />
+                          )}
                         </button>
                       );
                     })}
@@ -701,7 +718,7 @@ export function CareerRoadmap({
                               <Button
                                 variant="outline"
                                 size="sm"
-                                onClick={() => setSelectedTab('institutions')}
+                                onClick={() => setSelectedTab('colleges-aid')}
                                 className="w-full text-xs font-semibold gap-2 border-primary/30 text-primary hover:bg-primary/10"
                               >
                                 <Building2 className="h-4 w-4" />
@@ -795,11 +812,91 @@ export function CareerRoadmap({
                     </div>
                   )}
 
-                </TabsContent>
+                </div>
               )}
 
-              {/* TAB 2: ACTION ROADMAP (Checklist format) */}
-              <TabsContent value="learning-path" className="mt-4 space-y-4">
+              {/* TAB 2: MULTI-CRITERIA DECISION MATRIX */}
+              <div className={selectedTab === 'decision-matrix' ? 'block mt-4' : 'hidden'}>
+                <DecisionMatrix pathways={pathways} />
+              </div>
+
+              {/* TAB 3: WHAT-IF CONTINGENCY SIMULATOR */}
+              <div className={selectedTab === 'what-if' ? 'block mt-4' : 'hidden'}>
+                <WhatIfSimulator
+                  currentCareerQuery={userInput.desiredCareer}
+                />
+              </div>
+
+              {/* TAB 4: COLLEGES & SCHOLARSHIPS HUB (Instant Sub-Tab Switching) */}
+              <div className={selectedTab === 'colleges-aid' ? 'block mt-4' : 'hidden'}>
+                <div className="flex justify-center mb-4">
+                  <div className="bg-muted/80 p-1 rounded-xl border border-border/50 flex gap-1">
+                    <button
+                      type="button"
+                      onClick={() => setCollegesSubTab('comparator')}
+                      className={`relative text-xs font-semibold flex items-center gap-1.5 px-4 py-2 rounded-lg transition-colors cursor-pointer select-none ${
+                        collegesSubTab === 'comparator'
+                          ? 'bg-card text-foreground shadow-sm'
+                          : 'text-muted-foreground hover:text-foreground'
+                      }`}
+                    >
+                      <Building2 className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
+                      University Comparator
+                      {collegesSubTab === 'comparator' && (
+                        <motion.div
+                          layoutId="activeCollegesSubTabUnderline"
+                          className="absolute bottom-0 left-2 right-2 h-[2.5px] bg-emerald-500 rounded-full shadow-[0_0_8px_rgba(16,185,129,0.6)]"
+                          transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+                        />
+                      )}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setCollegesSubTab('scholarships')}
+                      className={`relative text-xs font-semibold flex items-center gap-1.5 px-4 py-2 rounded-lg transition-colors cursor-pointer select-none ${
+                        collegesSubTab === 'scholarships'
+                          ? 'bg-card text-foreground shadow-sm'
+                          : 'text-muted-foreground hover:text-foreground'
+                      }`}
+                    >
+                      <Award className="h-3.5 w-3.5 text-amber-500" />
+                      Scholarships & Grants
+                      {collegesSubTab === 'scholarships' && (
+                        <motion.div
+                          layoutId="activeCollegesSubTabUnderline"
+                          className="absolute bottom-0 left-2 right-2 h-[2.5px] bg-amber-500 rounded-full shadow-[0_0_8px_rgba(245,158,11,0.6)]"
+                          transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+                        />
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                <div className={collegesSubTab === 'comparator' ? 'block' : 'hidden'}>
+                  <InstitutionComparator
+                    userBudgetINR={userBudget}
+                    userStream={userInput.desiredCareer}
+                  />
+                </div>
+                <div className={collegesSubTab === 'scholarships' ? 'block' : 'hidden'}>
+                  <ScholarshipFinder
+                    userPercentage={userScore}
+                    userStream={userInput.desiredCareer}
+                  />
+                </div>
+              </div>
+
+              {/* TAB 5: EDUCATION LOAN & FINANCIAL SIMULATOR */}
+              <div className={selectedTab === 'loans' ? 'block mt-4' : 'hidden'}>
+                <LoanSimulator
+                  initialLoanPrincipalLakhs={Math.min(40, Math.max(5, userBudget))}
+                  initialStartingSalaryLPA={projectedSalaryLPA}
+                  pathwayTitle={currentPathway?.pathwayTitle}
+                />
+              </div>
+
+              {/* TAB 6: ACTION ROADMAP, CURRICULUM & PREP */}
+              <div className={selectedTab === 'learning-path' ? 'block mt-4 space-y-6' : 'hidden'}>
                 <Card>
                   <CardHeader>
                     <CardTitle className="font-headline">Step-by-Step Action Roadmap</CardTitle>
@@ -856,124 +953,64 @@ export function CareerRoadmap({
                     </Accordion>
                   </CardContent>
                 </Card>
-              </TabsContent>
 
-              {/* TAB 3: CURATED RESOURCES */}
-              <TabsContent value="resources" className="mt-4">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="font-headline">Curated Learning Resources</CardTitle>
-                    <CardDescription>Courses, videos, and documentation selected for your path.</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <Accordion type="single" collapsible className="w-full space-y-2">
-                      {(data.resources || []).map((resource, index) => (
-                        <AccordionItem value={`item-${index}`} key={index} className="bg-secondary/30 rounded-md px-4 border">
-                          <AccordionTrigger className="py-3 hover:no-underline">
-                            <div className="flex items-center text-left">
+                {/* Curated Resources Section */}
+                {data.resources && data.resources.length > 0 && (
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="font-headline text-lg">Curated Learning Resources</CardTitle>
+                      <CardDescription className="text-xs">Courses, videos, and documentation selected for your path.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-2">
+                        {data.resources.map((resource, index) => (
+                          <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-secondary/30 border border-border/50">
+                            <div className="flex items-center gap-2.5">
                               {getIconForResource(resource.type)}
-                              <span className="font-medium text-sm flex-1">{resource.title}</span>
-                              {index === 0 && (
-                                <Badge variant="outline" className="ml-2 border-accent text-accent">
-                                  <Award className="mr-1 h-3 w-3" /> Recommended
-                                </Badge>
-                              )}
-                            </div>
-                          </AccordionTrigger>
-                          <AccordionContent className="pb-4">
-                            {resource.type === 'video' && resource.videoId ? (
                               <div>
-                                <div className="aspect-video w-full overflow-hidden rounded-lg mb-2">
-                                  <iframe
-                                    className="w-full h-full"
-                                    src={`https://www.youtube.com/embed/${resource.videoId}`}
-                                    title={resource.title}
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                    allowFullScreen
-                                  ></iframe>
-                                </div>
-                                <a href={resource.url} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline">
-                                  Watch on YouTube &rarr;
+                                <p className="font-medium text-xs sm:text-sm">{resource.title}</p>
+                                <a href={resource.url} target="_blank" rel="noopener noreferrer" className="text-[11px] text-primary hover:underline">
+                                  {resource.url} &rarr;
                                 </a>
                               </div>
-                            ) : (
-                              <p className="text-sm">
-                                <a href={resource.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                                  Visit Resource ({resource.url}) &rarr;
-                                </a>
-                              </p>
-                            )}
-                          </AccordionContent>
-                        </AccordionItem>
-                      ))}
-                    </Accordion>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-
-              {/* TAB 4: ESSENTIAL TOOLS */}
-              <TabsContent value="tools" className="mt-4">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="font-headline">Essential Tools & Platforms</CardTitle>
-                    <CardDescription>Industry-standard software and tools to master for this field.</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <ul className="space-y-3">
-                      {(data.tools || []).map((tool, index) => (
-                        <li key={index} className="p-4 bg-secondary/30 rounded-md border">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center">
-                              <Wrench className="h-5 w-5 text-primary mr-3" />
-                              <span className="font-semibold text-base">{tool.name}</span>
                             </div>
-                            {getBadgeForCost(tool.cost)}
+                            <Badge variant="outline" className="text-[10px] capitalize">
+                              {resource.type}
+                            </Badge>
                           </div>
-                          <p className="text-sm text-muted-foreground mt-2 ml-8">{tool.description}</p>
-                        </li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                </Card>
-              </TabsContent>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
 
-              {/* TAB 5: GLOBAL INSTITUTION COMPARATOR */}
-              <TabsContent value="institutions" className="mt-4 animate-in fade-in duration-300">
-                <InstitutionComparator
-                  userBudgetINR={userBudget}
-                  userStream={userInput.desiredCareer}
-                />
-              </TabsContent>
-
-              {/* TAB 6: SCHOLARSHIPS & FUNDING FINDER */}
-              <TabsContent value="scholarships" className="mt-4 animate-in fade-in duration-300">
-                <ScholarshipFinder
-                  userPercentage={userScore}
-                  userStream={userInput.desiredCareer}
-                />
-              </TabsContent>
-
-              {/* TAB 7: EDUCATION LOAN & FINANCIAL SIMULATOR */}
-              <TabsContent value="loans" className="mt-4 animate-in fade-in duration-300">
-                <LoanSimulator
-                  initialLoanPrincipalLakhs={Math.min(40, Math.max(5, userBudget))}
-                  initialStartingSalaryLPA={projectedSalaryLPA}
-                  pathwayTitle={currentPathway?.pathwayTitle}
-                />
-              </TabsContent>
-
-              {/* TAB 8: MULTI-CRITERIA DECISION MATRIX */}
-              <TabsContent value="decision-matrix" className="mt-4 animate-in fade-in duration-300">
-                <DecisionMatrix pathways={pathways} />
-              </TabsContent>
-
-              {/* TAB 9: WHAT-IF CONTINGENCY SIMULATOR */}
-              <TabsContent value="what-if" className="mt-4 animate-in fade-in duration-300">
-                <WhatIfSimulator
-                  currentCareerQuery={userInput.desiredCareer}
-                />
-              </TabsContent>
-            </Tabs>
+                {/* Essential Tools Section */}
+                {data.tools && data.tools.length > 0 && (
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="font-headline text-lg">Essential Tools & Platforms</CardTitle>
+                      <CardDescription className="text-xs">Industry-standard software and tools to master for this field.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {data.tools.map((tool, index) => (
+                          <div key={index} className="p-3 bg-secondary/30 rounded-lg border border-border/50">
+                            <div className="flex items-center justify-between mb-1">
+                              <div className="flex items-center gap-2">
+                                <Wrench className="h-4 w-4 text-primary" />
+                                <span className="font-bold text-xs sm:text-sm">{tool.name}</span>
+                              </div>
+                              {getBadgeForCost(tool.cost)}
+                            </div>
+                            <p className="text-xs text-muted-foreground">{tool.description}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+            </div>
           </main>
 
         </div>

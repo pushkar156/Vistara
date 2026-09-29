@@ -23,6 +23,7 @@ import { FirebaseProvider, type FirebaseContextType } from '@/firebase/provider'
 import { AuthContext, type AuthContextType } from '@/hooks/use-auth';
 import { ThemeProvider } from '@/components/theme-provider';
 import Header from '@/components/header';
+import Footer from '@/components/footer';
 
 type FirebaseClientProviderProps = {
   children: ReactNode;
@@ -113,7 +114,7 @@ export function FirebaseClientProvider({ children }: FirebaseClientProviderProps
         <AuthContext.Provider value={authContextValue}>
             <ThemeProvider
                 attribute="class"
-                defaultTheme="dark"
+                defaultTheme="system"
                 enableSystem
                 disableTransitionOnChange
             >
@@ -122,6 +123,7 @@ export function FirebaseClientProvider({ children }: FirebaseClientProviderProps
                 <main className="flex-1">
                   {children}
                 </main>
+                <Footer />
               </div>
             </ThemeProvider>
         </AuthContext.Provider>
